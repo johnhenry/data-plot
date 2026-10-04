@@ -10,8 +10,8 @@ CSS.
 ## Usage
 
 ```html
-<script type="module" src="https://esm.sh/@johnhenry/domkit/chernoff-face/global.mjs"></script>
-<link rel="stylesheet" href="https://esm.sh/@johnhenry/domkit/chernoff-face/index.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnhenry/data-plot/src/chernoff-face/global.mjs"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@johnhenry/data-plot/src/chernoff-face/index.css" />
 
 <chernoff-face smile="0.9" eye-size="0.7" aria-label="Q3: well ahead of plan"></chernoff-face>
 <chernoff-face smile="0.2" brow-slant="0.1" aria-label="Q4: behind"></chernoff-face>
@@ -39,16 +39,22 @@ script, the `features` property reads all of them at once in camelCase
 you include. `FEATURES` (a named export) lists them with what 0 and 1
 mean.
 
-## Faces as plot points
+## Faces as plot marks
 
-A `<scatter-plot>` copies its `<template>` for each point and turns a data
-item's extra keys into attributes, so a face can be the point:
+In a `<data-plot>`, a face can be the mark: `x` and `y` place it, and
+`:attr` bindings map fields onto features, each scaled to 0–1 across the
+data.
 
 ```html
-<scatter-plot x-max="10" y-max="10" aria-label="Teams: velocity against morale"
-  data='[{"x": 2, "y": 7, "smile": 0.9, "aria-label": "Team A"}, {"x": 8, "y": 3, "smile": 0.1, "aria-label": "Team B"}]'>
-  <template><chernoff-face></chernoff-face></template>
-</scatter-plot>
+<data-plot aria-label="Teams: velocity against morale">
+  <datalist>
+    <option label="Team A" data-velocity="2" data-morale="7" data-risk="0.2"></option>
+    <option label="Team B" data-velocity="8" data-morale="3" data-risk="0.9"></option>
+  </datalist>
+  <plot-marks x="velocity" y="morale">
+    <template><chernoff-face :smile="morale" :brow-slant="risk" aria-label="{label}"></chernoff-face></template>
+  </plot-marks>
+</data-plot>
 ```
 
 ## API
@@ -80,8 +86,8 @@ item's extra keys into attributes, so a face can be the point:
 
 | Property | Description |
 |---|---|
-| `--domkit-face-fill` | Fill of the face (index.css). |
-| `--domkit-face-stroke` | Line color (index.css; defaults to currentColor). |
+| `--chernoff-face-fill` | Fill of the face (index.css). |
+| `--chernoff-face-stroke` | Line color (index.css; defaults to currentColor). |
 
 <!-- api:end -->
 
@@ -94,9 +100,8 @@ item's extra keys into attributes, so a face can be the point:
 | `.mouth[data-open]` | The mouth when it's open (a closed shape you can fill) |
 
 Without any CSS it's a line drawing in `currentColor`, an inline block
-4em square. `index.css` fills the face with a tint of the shared
-`--domkit-accent` token, and the eyes with the page background
-(`Canvas`). Adjust it with `--domkit-face-fill` and `--domkit-face-stroke`.
+4em square. `index.css` fills the face with a tint of its line color,
+and the eyes with the page background (`Canvas`). Adjust it with `--chernoff-face-fill` and `--chernoff-face-stroke`.
 
 ## Notes
 
@@ -105,5 +110,10 @@ Without any CSS it's a line drawing in `currentColor`, an inline block
   to date. Write your own label for what the face *means*.
 - Changing a feature updates the existing SVG in place; nothing is
   re-parsed.
-- Formerly `experimental/chernoff-face`, whose features were raw SVG
-  coordinates (`upperlip`, `irisoffset`, …).
+- In a plot, map fields onto features with `:attr` bindings:
+  `<plot-marks x="revenue" y="growth"><template><chernoff-face
+  :smile="morale" :brow-slant="risk"></chernoff-face></template></plot-marks>`
+  scales each field to 0–1 across the data.
+- Formerly in `@johnhenry/domkit` (and before that its
+  `experimental/chernoff-face`, whose features were raw SVG coordinates:
+  `upperlip`, `irisoffset`, …).

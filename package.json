@@ -1,20 +1,46 @@
 {
   "name": "@johnhenry/data-plot",
   "version": "0.0.0",
+  "description": "Plots written as HTML: data from a <table> or <datalist>, marks from a <template>, placed with CSS. Custom elements shipped as source, no build step, no dependencies.",
   "private": true,
-  "description": "Plots written as HTML: data from a table, marks from a template, placed with CSS. Custom elements, no build step, no dependencies.",
   "type": "module",
-  "license": "MIT",
   "exports": {
     ".": "./src/global.mjs",
+    "./package.json": "./package.json",
     "./index.css": "./src/index.css",
     "./*.mjs": "./src/*.mjs",
+    "./*.css": "./src/*.css",
     "./*": "./src/*/index.mjs"
   },
+  "files": [
+    "src/"
+  ],
   "scripts": {
     "serve": "node scripts/serve.mjs",
     "test": "node --test test/*.test.mjs",
     "test:browser": "playwright test"
+  },
+  "keywords": [
+    "charts",
+    "plots",
+    "data-visualization",
+    "tables",
+    "datalist",
+    "chernoff-faces",
+    "web-components",
+    "custom-elements",
+    "no-build"
+  ],
+  "author": "John Henry",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhenry/data-plot.git"
+  },
+  "homepage": "https://github.com/johnhenry/data-plot#readme",
+  "bugs": "https://github.com/johnhenry/data-plot/issues",
+  "engines": {
+    "node": ">=26.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0"

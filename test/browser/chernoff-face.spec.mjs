@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { mount } from "./helpers.mjs";
 
-const MODULES = ["src/chernoff-face/global.mjs", "src/scatter-plot/global.mjs"];
+const MODULES = ["src/chernoff-face/global.mjs"];
 
 test("draws an SVG face in the light DOM, 4em square without CSS", async ({ page }) => {
   await mount(page, `<chernoff-face id="f"></chernoff-face>`, MODULES);
@@ -75,18 +75,22 @@ test("labels itself with its notable features unless the author labels it", asyn
   expect(labels).toEqual({ neutral: "Face, every feature neutral", smiling: "Face: smile 0.9", authored: "Team A" });
 });
 
-test("works as a scatter-plot point, with data keys as features", async ({ page }) => {
+test("works as a plot mark, with fields mapped onto features", async ({ page }) => {
   await mount(
     page,
-    `<scatter-plot id="p" x-max="10" y-max="10" data='[{"x": 2, "y": 3, "smile": 1, "aria-label": "A"}, {"x": 8, "y": 7, "smile": 0}]'>
-       <template><chernoff-face></chernoff-face></template>
-     </scatter-plot>`,
-    MODULES,
+    `<data-plot id="p" aria-label="Two faces"><datalist>
+       <option label="A" data-x="2" data-y="3" data-mood="9"></option>
+       <option label="B" data-x="8" data-y="7" data-mood="1"></option>
+     </datalist>
+     <plot-marks x="x" y="y"><template><chernoff-face :smile="mood" aria-label="{label}"></chernoff-face></template></plot-marks>
+     </data-plot>`,
+    ["src/global.mjs"],
   );
+  await expect(page.locator("chernoff-face")).toHaveCount(2);
   const faces = await page.evaluate(() =>
-    document.getElementById("p").points.map((face) => [face.localName, face.features.smile, face.querySelectorAll("svg").length, face.getAttribute("aria-label")]),
+    [...document.querySelectorAll("chernoff-face")].map((face) => [face.features.smile, face.querySelectorAll("svg").length, face.getAttribute("aria-label")]),
   );
-  expect(faces).toEqual([["chernoff-face", 1, 1, "A"], ["chernoff-face", 0, 1, "Face: smile 0"]]);
+  expect(faces).toEqual([[1, 1, "A"], [0, 1, "B"]]);
 });
 
 test("survives a move without duplicating its drawing", async ({ page }) => {

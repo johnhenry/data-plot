@@ -49,8 +49,8 @@ const make = (name, attributes = {}) => {
  * @attr {number} smile - 0 frown … 1 smile.
  * @attr {number} mouth-open - 0 closed … 1 open mouth.
  *
- * @cssprop --domkit-face-fill - Fill of the face (index.css).
- * @cssprop --domkit-face-stroke - Line color (index.css; defaults to currentColor).
+ * @cssprop --chernoff-face-fill - Fill of the face (index.css).
+ * @cssprop --chernoff-face-stroke - Line color (index.css; defaults to currentColor).
  */
 export default class ChernoffFace extends HTMLElement {
   static observedAttributes = NAMES;

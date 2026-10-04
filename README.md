@@ -107,8 +107,17 @@ Everything is in the light DOM, and every default rule is wrapped in
 
 Time and log scales, areas, stacking, transforms (histograms, box plots,
 density, trends), pies, facets, and layouts for trees, flows, networks,
-and maps: see [docs/roadmap.md](docs/roadmap.md). `<scatter-plot>` in
-domkit is what `<data-plot>` + `<plot-marks>` replaces.
+and maps: see [docs/roadmap.md](docs/roadmap.md).
+
+## Provenance
+
+`<chernoff-face>` and the scatter plot that `<data-plot>` grew from were
+developed in [`@johnhenry/domkit`](https://github.com/johnhenry/domkit)
+(and before that `johnhenry/lib`, as `xy-grapher` and an experimental
+`chernoff-face`), and moved here with their history. domkit's
+`<scatter-plot>` is replaced by `<data-plot>` with `<plot-marks>`. Earlier
+forms of both (`chernoff-face` and `xy-grapher`) shipped in domkit 0.0.0
+through 0.0.4; data-plot itself hasn't been published yet.
 
 ## Working on it
 
