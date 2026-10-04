@@ -9,7 +9,7 @@ css.rel = "stylesheet";
 css.href = `${DOMKIT}/code-color/index.css`;
 document.head.append(css);
 
-const KEY = "markable-demo-source";
+const KEY = "data-plot-demo-source";
 
 for (const iframe of document.querySelectorAll(".card iframe")) {
   const name = new URL(iframe.src).pathname.replace(/^.*?\/(src|demo)\//, "$1/");

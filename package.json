@@ -1,5 +1,5 @@
 {
-  "name": "@johnhenry/markable",
+  "name": "@johnhenry/data-plot",
   "version": "0.0.0",
   "private": true,
   "description": "Plots written as HTML: data from a table, marks from a template, placed with CSS. Custom elements, no build step, no dependencies.",

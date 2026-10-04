@@ -10,7 +10,7 @@ import { DataBinding, sourceChildrenChanged } from "./source.mjs";
 import { color, unitScale } from "./scale.mjs";
 
 /** Marks the frame element (<data-plot>, under whatever tag name). */
-export const FRAME = Symbol.for("markable.frame");
+export const FRAME = Symbol.for("data-plot.frame");
 
 const warned = new WeakSet();
 

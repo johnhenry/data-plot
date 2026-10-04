@@ -1,7 +1,8 @@
-# markable (prototype)
+# data-plot
 
-Plots written as HTML, for pages with no build step. A working name: this
-is a prototype to judge the API before anything moves out of domkit.
+Plots written as HTML, for pages with no build step: the data is a
+`<table>` or `<datalist>` you'd write anyway, the marks are elements you
+design, and CSS places them. Custom elements, no dependencies.
 
 ```html
 <link rel="stylesheet" href="src/index.css" />

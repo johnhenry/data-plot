@@ -60,7 +60,7 @@ which is what makes a new chart type cheap.
   here. Density bandwidth selection and regression with intervals would
   call `@johnhenry/math`'s `Statistics`/`Distributions`, loaded with a
   dynamic `import()` only when one of those transforms is used. A page
-  with no transform loads nothing extra, and markable keeps zero runtime
+  with no transform loads nothing extra, and data-plot keeps zero runtime
   dependencies.
 - Done when: histogram, box plot, violin (density, mirrored), and
   scatter-with-trend demos.
@@ -159,15 +159,15 @@ and `--depth` for nested data. The shared CSS places any mark with
   marks. Regions are SVG paths colored by a joined field (a choropleth).
 - **Size:** the largest, and mostly not about plotting: projections,
   shape simplification, and where the map data comes from. This one is
-  better as a **separate package** that depends on markable's
+  better as a **separate package** that depends on data-plot's
   marks contract, the way canvas-fx and domkit meet in the page.
 
 ### Packaging
 
-Hierarchies, flows, and networks fit in markable as optional modules
-(`markable/treemap/global.mjs`, and so on): each is one layout element
+Hierarchies, flows, and networks fit in data-plot as optional modules
+(`data-plot/treemap/global.mjs`, and so on): each is one layout element
 plus shared link drawing, and nothing loads unless it's imported. Maps go
-in their own package. If markable's own size becomes a concern, the
+in their own package. If data-plot's own size becomes a concern, the
 layouts can split out later without changing their HTML.
 
 ## Suggested order
