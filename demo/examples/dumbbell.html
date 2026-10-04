@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 28px 16px 36px 70px; --plot-height: 220px; }
+  /* Three layers, one scale: a bar from before to after, then a dot at each end. */
+  .span { block-size: 3px; background: color-mix(in srgb, CanvasText 30%, transparent); }
+  .before, .after { inline-size: 12px; block-size: 12px; border-radius: 50%; }
+  .before { background: #9498a0; }
+  .after { background: #4269d0; }
+  .key { font-size: 12px; }
+  .key span { display: inline-block; inline-size: 10px; block-size: 10px; border-radius: 50%; margin-inline: 8px 4px; }
+</style>
+</head>
+<body>
+<p class="key">Share cycling to work: <span class="before"></span>2015 <span class="after"></span>2025</p>
+<data-plot x-domain="0 auto">
+  <table>
+    <thead><tr><th>city</th><th>2015</th><th>2025</th></tr></thead>
+    <tbody>
+      <tr><td>Paris</td><td>3</td><td>11</td></tr>
+      <tr><td>London</td><td>4</td><td>7</td></tr>
+      <tr><td>Berlin</td><td>13</td><td>18</td></tr>
+      <tr><td>Madrid</td><td>1</td><td>4</td></tr>
+      <tr><td>Oslo</td><td>8</td><td>6</td></tr>
+    </tbody>
+  </table>
+  <plot-axis scale="x" label="% of trips" grid></plot-axis>
+  <plot-axis scale="y"></plot-axis>
+  <plot-marks x="2015" x2="2025" y="city"><template><span class="span"></span></template></plot-marks>
+  <plot-marks x="2015" y="city"><template><span class="before" title="{city} 2015: {2015}%"></span></template></plot-marks>
+  <plot-marks x="2025" y="city"><template><span class="after" title="{city} 2025: {2025}%"></span></template></plot-marks>
+</data-plot>
+</body>
+</html>

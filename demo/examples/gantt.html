@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 28px 16px 36px 90px; --plot-height: 240px; }
+  /* x2 makes a range: the default CSS stretches each mark from start to end. */
+  .task {
+    block-size: calc(var(--bandheight) * 100%);
+    background: var(--color);
+    border-radius: 4px;
+    font-size: 11px;
+    color: white;
+    padding-inline: 6px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .milestone { inline-size: 12px; block-size: 12px; rotate: 45deg; background: CanvasText; }
+</style>
+</head>
+<body>
+<data-plot x-domain="0 auto" y-padding="0.3">
+  <table>
+    <thead><tr><th>task</th><th>team</th><th>start</th><th>end</th><th>due</th></tr></thead>
+    <tbody>
+      <tr><td>Research</td><td>Design</td><td>0</td><td>3</td><td></td></tr>
+      <tr><td>Prototype</td><td>Design</td><td>2</td><td>6</td><td>6</td></tr>
+      <tr><td>Build</td><td>Engineering</td><td>5</td><td>12</td><td></td></tr>
+      <tr><td>Test</td><td>Engineering</td><td>10</td><td>14</td><td>14</td></tr>
+      <tr><td>Launch</td><td>Marketing</td><td>13</td><td>16</td><td>16</td></tr>
+    </tbody>
+  </table>
+  <plot-axis scale="x" label="Week" grid></plot-axis>
+  <plot-axis scale="y"></plot-axis>
+  <plot-marks x="start" x2="end" y="task" color="team" key="task">
+    <template><div class="task" title="{task}: weeks {start}–{end}">{team}</div></template>
+  </plot-marks>
+  <!-- A second layer on the same scales: a diamond at each due date. -->
+  <plot-marks x="due" y="task"><template><span class="milestone"></span></template></plot-marks>
+  <plot-legend></plot-legend>
+</data-plot>
+<button id="slip">Build slips two weeks</button>
+<script type="module">
+  document.querySelector("#slip").onclick = () => {
+    const end = document.querySelector("tbody tr:nth-child(3) td:nth-child(4)");
+    end.textContent = end.textContent === "12" ? "14" : "12";
+  };
+</script>
+</body>
+</html>

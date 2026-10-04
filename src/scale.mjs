@@ -34,7 +34,7 @@ export function ticks([min, max], count = 6) {
 /** Continuous numbers: domain [min, max] → 0…1. */
 export function linear(domain) {
   const [min, max] = domain;
-  const scale = (value) => (max === min ? 0.5 : (value - min) / (max - min));
+  const scale = (value) => (!isNumber(value) ? NaN : max === min ? 0.5 : (value - min) / (max - min));
   return Object.assign(scale, {
     type: "linear",
     domain,
@@ -88,11 +88,12 @@ export function extent(values) {
 /**
  * A position scale for `values`: linear when they're all numbers, banded
  * otherwise. `spec` is the `x-domain`/`y-domain` attribute: "0 100", or
- * "0 auto" to pin one end, applied before rounding to nice ticks.
+ * "0 auto" to pin one end, applied before rounding to nice ticks. `padding`
+ * is a banded scale's empty share of each band.
  */
-export function position(values, spec) {
+export function position(values, spec, padding) {
   const present = values.filter((value) => value !== null && value !== undefined && value !== "");
-  if (!present.length || !present.every(isNumber)) return band(present);
+  if (!present.length || !present.every(isNumber)) return band(present, Number.isFinite(padding) ? Math.min(1, Math.max(0, padding)) : undefined);
   let [min, max] = extent(present);
   const [low, high] = (spec ?? "").trim().split(/\s+/);
   const pinned = (text, fallback) => (text && text !== "auto" && Number.isFinite(Number(text)) ? Number(text) : fallback);

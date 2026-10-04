@@ -47,15 +47,20 @@ A plot maps data fields onto a mark's attributes through scales.
   so a CSS transition moves them. Editing the table replots.
 - **Accessible by default.** When the data is a readable table, it stays
   available to screen readers and the drawing is hidden from them.
+- **Ranges:** `x2`/`y2` give a mark a second end on the same scale
+  (`--x-start`, `--x-length`, and the same for y), and the default CSS
+  stretches it between them: Gantt bars, dumbbells, error bars.
+- **`repeat="field"`** stamps a row once per unit (`--index`, `--count`):
+  waffle and pictogram charts.
 - **`<plot-marks>` works alone**, with its own `data`: a grid of glyphs,
-  laid out by your CSS.
+  laid out by your CSS, with `color` still applied.
 
 ## Not yet
 
-Log and time scales, areas, stacking, facets, tooltips beyond `title`,
-transforms (bin, density, regression), and a canvas mark for thousands of
-points. `<scatter-plot>` in domkit is what `<data-plot>` + `<plot-marks>`
-replaces.
+Time and log scales, areas, stacking, transforms (histograms, box plots,
+density, trends), pies, facets, and layouts for trees, flows, networks,
+and maps: see [docs/roadmap.md](docs/roadmap.md). `<scatter-plot>` in
+domkit is what `<data-plot>` + `<plot-marks>` replaces.
 
 ## Working on it
 

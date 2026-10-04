@@ -21,6 +21,8 @@
   </p>
   <nav>
     <a href="#plots">Plots</a>
+    <a href="#same-marks">Same marks, other charts</a>
+    <a href="#ranges">Ranges</a>
     <a href="#glyphs">Glyphs</a>
   </nav>
   <label class="toggle-source"><input type="checkbox" id="show-source" checked /> Show each example's source beside it</label>
@@ -42,6 +44,42 @@
       <h3>Bars are CSS</h3>
       <p>A banded x scale gives each mark <code>--bandwidth</code>; CSS turns it into a bar. New data animates.</p>
       <iframe src="examples/bars.html"></iframe>
+    </div>
+  </div>
+  <h2 id="same-marks">Same marks, other charts <span class="count">no new elements</span></h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>Heatmap</h3>
+      <p>Banded scales across and up, a numeric color: each cell is a mark sized to its bands with <code>--bandwidth</code> and <code>--bandheight</code>.</p>
+      <iframe src="examples/heatmap.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>Waffle and pictogram</h3>
+      <p><code>repeat="count"</code> stamps a row once per unit. With no plot around it, a CSS grid lays the squares out.</p>
+      <iframe src="examples/units.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>Sparklines</h3>
+      <p>A plot the size of a word, in a sentence: no axes, and CSS shows only the last dot.</p>
+      <iframe src="examples/sparklines.html"></iframe>
+    </div>
+  </div>
+  <h2 id="ranges">Ranges <span class="count">x2 · y2</span></h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>Gantt chart</h3>
+      <p><code>x</code> to <code>x2</code> on a shared week scale, a band per task, and a second layer of milestones. Edit an end date and the bar moves.</p>
+      <iframe src="examples/gantt.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>Dumbbell</h3>
+      <p>Before and after: a range layer for the bar, then one dot layer for each end.</p>
+      <iframe src="examples/dumbbell.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>Error bars</h3>
+      <p><code>y</code> to <code>y2</code> for each interval, caps drawn by CSS, and the mean as a second layer.</p>
+      <iframe src="examples/errorbars.html"></iframe>
     </div>
   </div>
   <h2 id="glyphs">Glyphs</h2>

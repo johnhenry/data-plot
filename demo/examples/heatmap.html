@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 28px 8px 24px 56px; --plot-height: 220px; }
+  /* A heatmap cell is a mark the size of its band in both directions. */
+  data-plot > plot-marks > .cell {
+    inline-size: calc(var(--bandwidth) * 100%);
+    block-size: calc(var(--bandheight) * 100%);
+    background: var(--color);
+    border-radius: 3px;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    color: #111;
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+  }
+</style>
+</head>
+<body>
+<!-- Two banded scales (month across, city up) and a numeric color. -->
+<data-plot data="#rain" x-padding="0.08" y-padding="0.08">
+  <plot-axis scale="x"></plot-axis>
+  <plot-axis scale="y"></plot-axis>
+  <plot-marks x="month" y="city" color="mm">
+    <template><div class="cell" title="{city}, {month}: {mm} mm">{mm}</div></template>
+  </plot-marks>
+  <plot-legend label="mm"></plot-legend>
+</data-plot>
+
+<script type="application/json" id="rain">
+  [
+    {"city": "Rome", "month": "Jan", "mm": 67}, {"city": "Rome", "month": "Mar", "mm": 58},
+    {"city": "Rome", "month": "May", "mm": 38}, {"city": "Rome", "month": "Jul", "mm": 15},
+    {"city": "Rome", "month": "Sep", "mm": 69}, {"city": "Rome", "month": "Nov", "mm": 113},
+    {"city": "London", "month": "Jan", "mm": 55}, {"city": "London", "month": "Mar", "mm": 41},
+    {"city": "London", "month": "May", "mm": 49}, {"city": "London", "month": "Jul", "mm": 45},
+    {"city": "London", "month": "Sep", "mm": 49}, {"city": "London", "month": "Nov", "mm": 59},
+    {"city": "Bergen", "month": "Jan", "mm": 250}, {"city": "Bergen", "month": "Mar", "mm": 180},
+    {"city": "Bergen", "month": "May", "mm": 110}, {"city": "Bergen", "month": "Jul", "mm": 140},
+    {"city": "Bergen", "month": "Sep", "mm": 260}, {"city": "Bergen", "month": "Nov", "mm": 280}
+  ]
+</script>
+</body>
+</html>

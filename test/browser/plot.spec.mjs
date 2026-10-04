@@ -124,3 +124,45 @@ test("page CSS beats the defaults: a mark can be a bar", async ({ page }) => {
   const boxes = await page.$$eval(".bar", (els) => els.map((el) => Math.round(el.getBoundingClientRect().height)));
   expect(boxes).toEqual([100, 200]);
 });
+
+test("x2/y2: a range on the same scale, as start and length; rows without a position get no mark", async ({ page }) => {
+  await mount(page, `<data-plot x-domain="0 10">
+    <table><tr><th>k</th><th>from</th><th>to</th></tr>
+      <tr><td>a</td><td>2</td><td>6</td></tr><tr><td>b</td><td>8</td><td>4</td></tr><tr><td>c</td><td></td><td>5</td></tr></table>
+    <plot-marks x="from" x2="to" y="k"></plot-marks></data-plot>`);
+  expect(await vars(page, ".plot-dot", ["--x-start", "--x-length", "--x2"])).toEqual([
+    { "--x-start": "0.2", "--x-length": "0.4", "--x2": "0.6" },
+    { "--x-start": "0.4", "--x-length": "0.4", "--x2": "0.4" },
+  ]);
+  // The default CSS stretches the mark across its range.
+  const widths = await page.$$eval(".plot-dot", (els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
+  expect(widths).toEqual([240, 240]);
+});
+
+test("x2 values widen the scale too", async ({ page }) => {
+  await mount(page, `<data-plot><table><tr><th>a</th><th>b</th><th>y</th></tr><tr><td>0</td><td>100</td><td>1</td></tr></table>
+    <plot-marks x="a" x2="b" y="y"></plot-marks></data-plot>`);
+  expect(await page.evaluate(() => document.querySelector("data-plot").scales.x.domain)).toEqual([0, 100]);
+});
+
+test("a banded y scale reads top to bottom, like its table", async ({ page }) => {
+  await mount(page, `<data-plot>${TABLE}<plot-marks x="a" y="name"></plot-marks><plot-axis scale="y"></plot-axis></data-plot>`);
+  const y = (await vars(page, ".plot-dot", ["--y"])).map((v) => Number(v["--y"]));
+  expect(y[0]).toBeGreaterThan(y[1]);
+  expect(y[1]).toBeGreaterThan(y[2]);
+  const labels = await page.$$eval('plot-axis .plot-tick', (els) => els.map((el) => [el.textContent, Number(el.style.getPropertyValue("--at"))]));
+  expect(labels[0][1]).toBeGreaterThan(labels[2][1]);
+});
+
+test("repeat stamps a row once per unit, with --index and --count; alone, color still applies", async ({ page }) => {
+  await mount(page, `<plot-marks data='[{"k": "a", "n": 3}, {"k": "b", "n": 2}, {"k": "c", "n": 0}]' repeat="n" color="k">
+    <template><i>{k}</i></template></plot-marks>`);
+  await expect(page.locator("plot-marks i")).toHaveText(["a", "a", "a", "b", "b"]);
+  const props = await vars(page, "plot-marks i", ["--index", "--count", "--color"]);
+  expect(props.map((p) => p["--index"])).toEqual(["0", "1", "2", "0", "1"]);
+  expect(props[0]["--count"]).toBe("3");
+  expect(props[0]["--color"]).not.toBe(props[3]["--color"]);
+  // Fewer units removes the extra copies.
+  await page.evaluate(() => (document.querySelector("plot-marks").data = [{ k: "a", n: 1 }]));
+  await expect(page.locator("plot-marks i")).toHaveCount(1);
+});

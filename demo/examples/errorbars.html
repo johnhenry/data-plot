@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 20px 16px 32px 44px; --plot-height: 240px; }
+  /* y2 makes a vertical range: a thin bar with caps at both ends. */
+  .whisker { inline-size: 2px; background: CanvasText; }
+  .whisker::before, .whisker::after { content: ""; position: absolute; inset-inline: -6px; block-size: 2px; background: inherit; }
+  .whisker::before { top: 0; }
+  .whisker::after { bottom: 0; }
+  .mean { inline-size: 10px; block-size: 10px; border-radius: 50%; background: var(--color); }
+</style>
+</head>
+<body>
+<data-plot>
+  <table>
+    <caption>Reaction time (ms) by condition: mean and 95% interval</caption>
+    <thead><tr><th>condition</th><th>mean</th><th>low</th><th>high</th></tr></thead>
+    <tbody>
+      <tr><td>Control</td><td>310</td><td>290</td><td>332</td></tr>
+      <tr><td>Coffee</td><td>276</td><td>251</td><td>298</td></tr>
+      <tr><td>Music</td><td>322</td><td>286</td><td>360</td></tr>
+      <tr><td>Both</td><td>284</td><td>270</td><td>301</td></tr>
+    </tbody>
+  </table>
+  <plot-axis scale="y" label="ms" grid></plot-axis>
+  <plot-axis scale="x"></plot-axis>
+  <plot-marks x="condition" y="low" y2="high"><template><span class="whisker"></span></template></plot-marks>
+  <plot-marks x="condition" y="mean" color="condition"><template><span class="mean" title="{condition}: {mean} ms ({low}–{high})"></span></template></plot-marks>
+</data-plot>
+</body>
+</html>

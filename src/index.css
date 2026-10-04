@@ -7,6 +7,10 @@
 @property --x { syntax: "<number>"; inherits: true; initial-value: 0.5; }
 @property --y { syntax: "<number>"; inherits: true; initial-value: 0.5; }
 @property --size { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --x-start { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --x-length { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --y-start { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --y-length { syntax: "<number>"; inherits: true; initial-value: 0; }
 
 data-plot {
   display: block;
@@ -38,6 +42,19 @@ data-plot > table[data-plot-source] {
   bottom: calc(var(--y) * 100%);
   translate: -50% 50%;
 }
+/* Ranges (x2, y2): stretched from one end to the other. */
+:where(data-plot > plot-marks[x2] > :not(template)) {
+  left: calc(var(--x-start) * 100%);
+  inline-size: calc(var(--x-length) * 100%);
+  translate: 0 50%;
+}
+:where(data-plot > plot-marks[y2] > :not(template)) {
+  bottom: calc(var(--y-start) * 100%);
+  block-size: calc(var(--y-length) * 100%);
+  translate: -50% 0;
+}
+:where(data-plot > plot-marks[x2][y2] > :not(template)) { translate: 0 0; }
+
 .plot-dot {
   display: block;
   inline-size: calc(8px + var(--size) * 16px);
@@ -45,8 +62,12 @@ data-plot > table[data-plot-source] {
   border-radius: 50%;
   background: var(--color, currentColor);
 }
+/* A range with no template is a bar along it: thin across a numeric
+   scale, a band thick across a banded one. */
+plot-marks[x2] > .plot-dot { border-radius: 2px; inline-size: calc(var(--x-length) * 100%); block-size: max(6px, calc(var(--bandheight, 0) * 100%)); }
+plot-marks[y2] > .plot-dot { border-radius: 2px; block-size: calc(var(--y-length) * 100%); inline-size: max(6px, calc(var(--bandwidth, 0) * 100%)); }
 @media (prefers-reduced-motion: no-preference) {
-  :where(plot-marks > :not(template)) { transition: --x 0.5s, --y 0.5s, --size 0.5s, background-color 0.5s; }
+  :where(plot-marks > :not(template)) { transition: --x 0.5s, --y 0.5s, --size 0.5s, --x-start 0.5s, --x-length 0.5s, --y-start 0.5s, --y-length 0.5s, background-color 0.5s; }
 }
 
 /* Lines. */

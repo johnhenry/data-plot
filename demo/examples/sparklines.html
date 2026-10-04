@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.8 system-ui, sans-serif; margin: 12px; max-width: 40em; }
+  /* A sparkline is a plot the size of a word: no axes, almost no margin. */
+  data-plot.spark {
+    display: inline-block;
+    vertical-align: middle;
+    inline-size: 6em;
+    --plot-height: 1.2em;
+    --plot-margin: 3px;
+    color: #4269d0;
+  }
+  /* Only the last point gets a dot. */
+  data-plot.spark .plot-dot { inline-size: 5px; block-size: 5px; visibility: hidden; }
+  data-plot.spark .plot-dot:last-child { visibility: visible; }
+  data-plot.spark path { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+<p>
+  Visitors were steady all week
+  <data-plot class="spark" role="img" data="[[1,120],[2,132],[3,128],[4,140],[5,138],[6,170],[7,190]]" aria-label="rising from 120 to 190">
+    <plot-line x="0" y="1"></plot-line><plot-marks x="0" y="1"></plot-marks>
+  </data-plot>
+  until the weekend, when they reached 190, while sign-ups
+  <data-plot class="spark" role="img" data="[[1,9],[2,7],[3,8],[4,4],[5,5],[6,3],[7,2]]" aria-label="falling from 9 to 2" style="color: #ff725c">
+    <plot-line x="0" y="1"></plot-line><plot-marks x="0" y="1"></plot-marks>
+  </data-plot>
+  kept falling.
+</p>
+</body>
+</html>

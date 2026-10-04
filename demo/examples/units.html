@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  /* A waffle chart: repeat="count" stamps one square per unit; a CSS grid lays them out. */
+  .side { display: flex; flex-wrap: wrap; gap: 24px; align-items: start; }
+  caption { caption-side: bottom; font-size: 12px; max-inline-size: 12em; text-align: start; }
+  .waffle { display: grid; grid-template-columns: repeat(10, 18px); gap: 3px; }
+  .waffle .square { block-size: 18px; border-radius: 3px; background: var(--color); }
+  /* A pictogram: the same thing, inline, with an icon for each unit. */
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin-top: 20px; }
+  dd { margin: 0; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+<div class="side">
+<table id="answers">
+  <caption>“Would you use it again?” (100 answers)</caption>
+  <thead><tr><th>answer</th><th>count</th></tr></thead>
+  <tbody>
+    <tr><td>Yes</td><td>54</td></tr>
+    <tr><td>Maybe</td><td>27</td></tr>
+    <tr><td>No</td><td>19</td></tr>
+  </tbody>
+</table>
+
+<!-- No <data-plot>: plot-marks alone, with color, but no positions. -->
+<plot-marks class="waffle" data="#answers" repeat="count" color="answer" aria-hidden="true">
+  <template><span class="square" title="{answer}"></span></template>
+</plot-marks>
+</div>
+
+<dl>
+  <dt>Mon</dt><dd><plot-marks data='[{"cups": 3}]' repeat="cups" role="img" aria-label="3 cups"><template><span>☕</span></template></plot-marks></dd>
+  <dt>Tue</dt><dd><plot-marks data='[{"cups": 5}]' repeat="cups" role="img" aria-label="5 cups"><template><span>☕</span></template></plot-marks></dd>
+  <dt>Wed</dt><dd><plot-marks data='[{"cups": 1}]' repeat="cups" role="img" aria-label="1 cup"><template><span>☕</span></template></plot-marks></dd>
+</dl>
+</body>
+</html>
