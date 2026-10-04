@@ -1,0 +1,136 @@
+:root {
+  color-scheme: light dark;
+  --border: #d0d0d8;
+  --bg-card: #ffffff;
+  --bg-page: #f6f6f9;
+  --accent: #4a4ae0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --border: #3a3a44;
+    --bg-card: #1c1c24;
+    --bg-page: #101014;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  font: 15px/1.5 system-ui, sans-serif;
+  margin: 0;
+  padding: 32px 24px 64px;
+  background: var(--bg-page);
+  color: inherit;
+}
+header {
+  max-width: 900px;
+  margin: 0 auto 32px;
+}
+header h1 { margin-bottom: 4px; }
+header p.lede { max-width: 70ch; }
+header nav {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+header nav a {
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--accent);
+}
+main { max-width: 1400px; margin: 0 auto; }
+h2 {
+  max-width: 900px;
+  margin: 48px auto 4px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+h2 .count { font-weight: normal; font-size: 14px; color: #888; }
+p.group-note {
+  max-width: 900px;
+  margin: 4px auto 16px;
+  font-size: 14px;
+  color: #777;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.card h3 {
+  margin: 0;
+  padding: 10px 14px 0;
+  font-size: 15px;
+}
+.card p {
+  margin: 4px 0 10px;
+  padding: 0 14px;
+  font-size: 13px;
+  color: #888;
+}
+.card iframe {
+  width: 100%;
+  height: 220px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.card.tall iframe { height: 320px; }
+.card.wide { grid-column: 1 / -1; }
+.card.wide.tall iframe { height: 760px; }
+.unimplemented {
+  max-width: 900px;
+  margin: 16px auto 0;
+  font-size: 14px;
+  color: #777;
+}
+.unimplemented code { font-size: 13px; }
+footer {
+  max-width: 900px;
+  margin: 64px auto 0;
+  font-size: 13px;
+  color: #888;
+}
+/* Each card's source beside it (demo/source.mjs). Cards take a full row so
+   the example and its source each get half; narrow screens stack them. */
+.toggle-source { font-size: 13px; display: inline-flex; gap: 6px; align-items: center; margin-top: 12px; }
+:root:not([data-hide-source]) .grid { grid-template-columns: 1fr; }
+:root:not([data-hide-source]) .card { display: grid; grid-template-columns: 1fr; container-type: inline-size; }
+:root[data-hide-source] .card .source { display: none; }
+.card .source {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-top: 1px solid var(--border);
+  background: var(--bg-page);
+}
+.card .source a { font: 12px ui-monospace, monospace; padding: 6px 12px; color: var(--accent); }
+.card .source code-color { display: block; min-height: 0; flex: 1; }
+.card .source pre {
+  margin: 0;
+  padding: 8px 12px 12px;
+  font: 12px/1.45 ui-monospace, monospace;
+  overflow: auto;
+  overflow-anchor: none;
+  height: 100%;
+  max-height: 220px;
+}
+.card.tall .source pre { max-height: 320px; }
+.card.wide.tall .source pre { max-height: 760px; }
+@media (min-width: 900px) {
+  :root:not([data-hide-source]) .card { grid-template-columns: 1fr 1fr; align-content: start; }
+  :root:not([data-hide-source]) .card > :not(iframe, .source) { grid-column: 1 / -1; }
+  :root:not([data-hide-source]) .card .source { border-left: 1px solid var(--border); }
+  .card .source pre { max-height: none; height: 0; flex: 1 1 auto; }
+  .card .source code-color { display: flex; flex-direction: column; }
+}

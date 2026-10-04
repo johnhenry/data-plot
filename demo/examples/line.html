@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 28px 16px 32px 40px; }
+  /* A template mark: a small ring, colored by its series. */
+  .ring { inline-size: 9px; block-size: 9px; border-radius: 50%; border: 2px solid var(--color); background: Canvas; }
+</style>
+</head>
+<body>
+<!-- Data from JSON, here in a script element the plot points to. -->
+<script type="application/json" id="temps">
+  [
+    {"month": 1, "city": "Oslo", "c": -4}, {"month": 3, "city": "Oslo", "c": 0},
+    {"month": 5, "city": "Oslo", "c": 11}, {"month": 7, "city": "Oslo", "c": 17},
+    {"month": 9, "city": "Oslo", "c": 11}, {"month": 11, "city": "Oslo", "c": 1},
+    {"month": 1, "city": "Rome", "c": 8}, {"month": 3, "city": "Rome", "c": 11},
+    {"month": 5, "city": "Rome", "c": 18}, {"month": 7, "city": "Rome", "c": 25},
+    {"month": 9, "city": "Rome", "c": 22}, {"month": 11, "city": "Rome", "c": 13}
+  ]
+</script>
+<data-plot data="#temps" aria-label="Average temperature by month, Oslo and Rome">
+  <plot-axis scale="x" label="Month" ticks="12"></plot-axis>
+  <plot-axis scale="y" label="°C" grid></plot-axis>
+  <!-- Two layers over the same data and scales: a line per city, and a ring per row. -->
+  <plot-line x="month" y="c" color="city"></plot-line>
+  <plot-marks x="month" y="c" color="city">
+    <template><span class="ring" title="{city}, month {month}: {c} °C"></span></template>
+  </plot-marks>
+  <plot-legend></plot-legend>
+</data-plot>
+</body>
+</html>

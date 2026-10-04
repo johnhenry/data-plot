@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<link rel="stylesheet" href="../../src/chernoff-face/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 36px 36px 40px 56px; --plot-height: 320px; }
+  data-plot chernoff-face { inline-size: 40px; block-size: 40px; color: var(--color); }
+  .faces { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+  figure { margin: 0; text-align: center; }
+  figure chernoff-face { inline-size: 64px; block-size: 64px; }
+  figcaption { font-size: 12px; }
+</style>
+</head>
+<body>
+<table id="teams" hidden>
+  <thead><tr><th>team</th><th>revenue</th><th>growth</th><th>risk</th><th>size</th><th>morale</th></tr></thead>
+  <tbody>
+    <tr><td>Atlas</td><td>120</td><td>4</td><td>0.2</td><td>40</td><td>8</td></tr>
+    <tr><td>Beacon</td><td>80</td><td>12</td><td>0.6</td><td>12</td><td>6</td></tr>
+    <tr><td>Cobalt</td><td>200</td><td>-3</td><td>0.4</td><td>90</td><td>4</td></tr>
+    <tr><td>Delta</td><td>45</td><td>20</td><td>0.9</td><td>8</td><td>9</td></tr>
+    <tr><td>Ember</td><td>150</td><td>7</td><td>0.1</td><td>55</td><td>7</td></tr>
+    <tr><td>Fable</td><td>95</td><td>-8</td><td>0.7</td><td>30</td><td>3</td></tr>
+  </tbody>
+</table>
+
+<!-- A Chernoff face is a mark like any other: ":smile" maps a field onto
+     the face's 0-1 smile, the same way x and y map fields onto position. -->
+<data-plot data="#teams">
+  <plot-axis scale="x" label="Revenue" grid></plot-axis>
+  <plot-axis scale="y" label="Growth %" grid></plot-axis>
+  <plot-marks x="revenue" y="growth" color="team" key="team">
+    <template>
+      <chernoff-face :smile="morale" :brow-slant="risk" :face-width="size" :eye-size="growth" aria-label="{team}"></chernoff-face>
+    </template>
+  </plot-marks>
+</data-plot>
+
+<!-- The same rows with no plot: plot-marks alone stamps one figure per row,
+     and the page's CSS lays them out as a grid. -->
+<plot-marks class="faces" data="#teams">
+  <template>
+    <figure>
+      <chernoff-face :smile="morale" :brow-slant="risk" :face-width="size" :eye-size="growth" aria-hidden="true"></chernoff-face>
+      <figcaption>{team}: {revenue}k, {growth}%</figcaption>
+    </figure>
+  </template>
+</plot-marks>
+</body>
+</html>

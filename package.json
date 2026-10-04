@@ -1,0 +1,22 @@
+{
+  "name": "@johnhenry/markable",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Plots written as HTML: data from a table, marks from a template, placed with CSS. Custom elements, no build step, no dependencies.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/global.mjs",
+    "./index.css": "./src/index.css",
+    "./*.mjs": "./src/*.mjs",
+    "./*": "./src/*/index.mjs"
+  },
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

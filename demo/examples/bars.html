@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<script type="module" src="../../src/global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 16px 16px 32px 40px; --plot-height: 250px; }
+  /* There's no bar element: a bar is a mark that CSS stretches down to
+     the axis. --y is its height, --bandwidth its share of the width. */
+  data-plot > plot-marks > .bar {
+    bottom: 0;
+    translate: -50% 0;
+    block-size: calc(var(--y) * 100%);
+    inline-size: calc(var(--bandwidth) * 100%);
+    background: var(--color, steelblue);
+    border-radius: 3px 3px 0 0;
+  }
+  .bar span { position: absolute; inset-inline: 0; bottom: 100%; text-align: center; font-size: 11px; }
+</style>
+</head>
+<body>
+<data-plot data='[{"day": "Mon", "cups": 3}, {"day": "Tue", "cups": 5}, {"day": "Wed", "cups": 2},
+                  {"day": "Thu", "cups": 6}, {"day": "Fri", "cups": 4}]' y-domain="0 auto">
+  <plot-axis scale="y" grid ticks="3"></plot-axis>
+  <plot-axis scale="x"></plot-axis>
+  <plot-marks x="day" y="cups" key="day">
+    <template><div class="bar"><span>{cups}</span></div></template>
+  </plot-marks>
+</data-plot>
+
+<button id="more">Another week</button>
+<script type="module">
+  // Setting .data replots; bars keep their element (key="day"), so they grow and shrink.
+  const plot = document.querySelector("data-plot");
+  document.querySelector("#more").onclick = () => {
+    plot.data = plot.data.map((row) => ({ ...row, cups: 1 + Math.floor(Math.random() * 8) }));
+  };
+</script>
+</body>
+</html>

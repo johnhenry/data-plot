@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>markable — live gallery</title>
+<link rel="stylesheet" href="style.css" />
+<script type="module" src="source.mjs"></script>
+</head>
+<body>
+<header>
+  <h1>markable</h1>
+  <p class="lede">
+    Plots written as HTML. A <code>&lt;data-plot&gt;</code> reads rows (from a
+    <code>&lt;table&gt;</code>, JSON, or a <code>.data</code> property) and
+    works out the scales; layers inside it draw. Marks are copies of a
+    <code>&lt;template&gt;</code> placed by CSS custom properties
+    (<code>--x</code>, <code>--y</code>, <code>--color</code>, <code>--size</code>),
+    and <code>:attr="field"</code> maps any field onto any element's
+    attribute, 0 to 1. Each card runs the real source from <code>../src/</code>.
+  </p>
+  <nav>
+    <a href="#plots">Plots</a>
+    <a href="#glyphs">Glyphs</a>
+  </nav>
+  <label class="toggle-source"><input type="checkbox" id="show-source" checked /> Show each example's source beside it</label>
+</header>
+<main>
+  <h2 id="plots">Plots</h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>A table, plotted</h3>
+      <p>Dots from the rows of a table, colored by region and sized by population. Edit the table and the dots move.</p>
+      <iframe src="examples/scatter.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>Lines and template marks, one scale</h3>
+      <p>Two layers over the same JSON: a line per city, and a ring per row with a tooltip from <code>{field}</code>.</p>
+      <iframe src="examples/line.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>Bars are CSS</h3>
+      <p>A banded x scale gives each mark <code>--bandwidth</code>; CSS turns it into a bar. New data animates.</p>
+      <iframe src="examples/bars.html"></iframe>
+    </div>
+  </div>
+  <h2 id="glyphs">Glyphs</h2>
+  <div class="grid">
+    <div class="card wide tall">
+      <h3>Chernoff faces as marks</h3>
+      <p>The same face element, placed by revenue and growth with its features mapped from other columns, then as a plain grid of figures.</p>
+      <iframe src="examples/faces.html"></iframe>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>Serve the repo root (<code>npm run serve</code>) and open <code>/demo/</code>.</p>
+</footer>
+</body>
+</html>
