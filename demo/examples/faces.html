@@ -31,7 +31,7 @@
 
 <!-- A Chernoff face is a mark like any other: ":smile" maps a field onto
      the face's 0-1 smile, the same way x and y map fields onto position. -->
-<data-plot data="#teams">
+<data-plot src="#teams" aria-label="Six teams placed by revenue and growth, each drawn as a face">
   <plot-axis scale="x" label="Revenue" grid></plot-axis>
   <plot-axis scale="y" label="Growth %" grid></plot-axis>
   <plot-marks x="revenue" y="growth" color="team" key="team">
@@ -43,7 +43,7 @@
 
 <!-- The same rows with no plot: plot-marks alone stamps one figure per row,
      and the page's CSS lays them out as a grid. -->
-<plot-marks class="faces" data="#teams">
+<plot-marks class="faces" src="#teams" role="group" aria-label="The six teams as faces">
   <template>
     <figure>
       <chernoff-face :smile="morale" :brow-slant="risk" :face-width="size" :eye-size="growth" aria-hidden="true"></chernoff-face>

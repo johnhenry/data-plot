@@ -25,41 +25,82 @@ is a prototype to judge the API before anything moves out of domkit.
 
 A plot maps data fields onto a mark's attributes through scales.
 
-- **`<data-plot>`** reads rows (a `<table>` inside it, `data="#id"` naming a
-  table or a JSON `<script>`, inline JSON, or the `.data` property) and
-  builds one scale per channel its layers use: linear for numbers, banded
-  for anything else, categorical or sequential for color.
-- **Layers** draw inside it, all on the same scales:
-  `<plot-marks>` (one element per row), `<plot-line>` (a line per series),
-  `<plot-axis>`, and `<plot-legend>`.
+- **`<data-plot>`** is the frame: it holds the data, builds one scale per
+  channel its layers use (linear for numbers, banded for anything else,
+  categorical or sequential for color), and has every layer draw on them.
+- **Layers** draw inside it: `<plot-marks>` (one element per row),
+  `<plot-line>` (a line per series), `<plot-axis>`, and `<plot-legend>`.
 - **A mark is any element.** `<plot-marks>` copies its `<template>` once
   per row and sets custom properties: `--x` and `--y` (0–1, from the left
-  and the bottom), `--color`, `--size`, and on a banded scale
-  `--bandwidth`/`--bandheight`. CSS places it. A bar is a mark that CSS
-  stretches down to the axis, so there's no bar element.
+  and the bottom), `--color`, `--size`, `--bandwidth`/`--bandheight` on a
+  banded scale, and for ranges (`x2`, `y2`) `--x-start`/`--x-length` and
+  the same for y. CSS places it. A bar is a mark that CSS stretches down
+  to the axis.
 - **Two template bindings, both plain HTML:** `:smile="profit"` sets
-  `smile` to the row's `profit` scaled 0–1 across the data, and
-  `title="{name}"` (or `{name}` in text) fills in the raw value. With `:attr`,
-  any element whose attributes are 0–1 numbers becomes a glyph, like
-  `<chernoff-face>` (copied here from domkit for the prototype).
-- **Updates animate.** Rows keep their element between draws (by `key`,
-  else by position), and `--x`/`--y`/`--size` are registered properties,
-  so a CSS transition moves them. Editing the table replots.
-- **Accessible by default.** When the data is a readable table, it stays
-  available to screen readers and the drawing is hidden from them.
-- **Tables in either shape.** A long table (a row per data point) is read
-  as is. A grid table (a row per item, a column per category, like a
-  heatmap written out) is read with `column-field="month"
-  value-field="mm"`: the column headers become `month`, each cell an
-  `mm`. A cell can show one thing and carry another with `data-value`, a
-  `<data value>`, or a `<time datetime>`.
-- **Ranges:** `x2`/`y2` give a mark a second end on the same scale
-  (`--x-start`, `--x-length`, and the same for y), and the default CSS
-  stretches it between them: Gantt bars, dumbbells, error bars.
+  `smile` to the row's `profit` scaled 0–1 (on the plot's scale for that
+  field, if a channel uses it), and `title="{name}"` (or `{name}` in
+  text) fills in the raw value. With `:attr`, any element whose
+  attributes are 0–1 numbers becomes a glyph, like `<chernoff-face>`.
 - **`repeat="field"`** stamps a row once per unit (`--index`, `--count`):
   waffle and pictogram charts.
-- **`<plot-marks>` works alone**, with its own `data`: a grid of glyphs,
-  laid out by your CSS, with `color` still applied.
+- **Updates animate.** Rows keep their element between draws (by `key`,
+  else by position), and the position properties are registered, so a
+  CSS transition moves them.
+
+## Data
+
+Every element that takes data follows one rule:
+
+1. **`.data`**, set from script, wins, until `src` changes or it's set to
+   null.
+2. Else **`src="#id"`** names a source in the page.
+3. Else a **source inside the element**.
+4. Else a layer uses **its plot's rows**. (A layer with its own rows still
+   draws on the plot's scales, which cover every layer's rows.)
+
+Sources, all HTML:
+
+- **`<table>`**: the visible, accessible one. A long table (a row per data
+  point) is read as is; a grid table (a row per item, a column per
+  category, like a heatmap written out) with `column-field="month"
+  value-field="mm"`. A cell can show one thing and carry another with
+  `data-value`, `<data value>`, or `<time datetime>`.
+- **`<datalist>`**: the hidden one. Each `<option>` is a row with `label`,
+  `value`, and a field per `data-*` attribute (`data-start-week` is
+  `startWeek`).
+- **`<script type="application/json">`**: JSON, used as written (tables
+  and datalists turn numeric text into numbers).
+
+A source is read once and watched once, however many elements use it,
+and editing it (by hand or from script) redraws all of them.
+
+## HTML or script, the same API
+
+- **Every attribute has a matching property**: `marks.x = "rain"`,
+  `plot.yDomain = "0 auto"`, `axis.grid = true`.
+- **`.data`** puts rows in from script, and reads back the current rows
+  whatever their source. Assign a new array to redraw; after changing one
+  in place, call **`requestRender()`** (every element has it).
+- **`marks.mark = (row, previous) => element`** builds marks in script
+  instead of a `<template>`; return `previous` to update it in place.
+  Positions and colors are set on whatever it returns.
+- **`render`** fires after each draw (on the plot, or on a layer drawing
+  alone); **`error`** when a source can't be read, keeping the last
+  drawing; **`.scales`** on the plot after a draw.
+
+## Accessibility
+
+It follows the data. When the data is a readable table (inside the plot,
+or visible in the page), the drawing only repeats it, so it's hidden from
+assistive technology. Otherwise the drawing has to say what it shows:
+give it an `aria-label` and it becomes `role="img"`; without one, a
+console warning. Set your own `role` (a `group` of labelled figures, say)
+and it's left alone.
+
+## Styling
+
+Everything is in the light DOM, and every default rule is wrapped in
+`:where()`, so any page CSS overrides it.
 
 ## Not yet
 

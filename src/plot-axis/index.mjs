@@ -1,4 +1,7 @@
-import PlotLayer from "../layer.mjs";
+import { PlotLayer } from "../layer.mjs";
+import { reflect } from "../reflect.mjs";
+
+const ATTRIBUTES = { scale: "string", ticks: 0, label: "string", grid: "boolean" };
 
 const format = (value) => (typeof value === "number" ? value.toLocaleString() : String(value));
 
@@ -11,12 +14,12 @@ const format = (value) => (typeof value === "number" ? value.toLocaleString() : 
  * @summary Tick labels and gridlines for one of the plot's scales.
  *
  * @attr {"x" | "y"} scale - Which scale. Default `x`.
- * @attr {number} ticks - About how many ticks, on a numeric scale. Default 6 for x, 5 for y.
+ * @attr {number} ticks - About how many ticks, on a numeric scale. Default (0): 6 for x, 5 for y.
  * @attr {string} label - A title for the axis.
  * @attr {boolean} grid - Draw gridlines at the ticks.
  */
 export default class PlotAxis extends PlotLayer {
-  static observedAttributes = ["scale", "ticks", "label", "grid"];
+  static observedAttributes = Object.keys(ATTRIBUTES);
 
   draw(context) {
     super.draw(context);
@@ -36,6 +39,8 @@ export default class PlotAxis extends PlotLayer {
     this.replaceChildren(...parts);
   }
 }
+
+reflect(PlotAxis, ATTRIBUTES);
 
 function span(className, at, text) {
   const element = document.createElement("span");

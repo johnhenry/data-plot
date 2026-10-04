@@ -103,4 +103,19 @@ export function position(values, spec, padding) {
   return linear([pinned(low, niceMin), pinned(high, niceMax)]);
 }
 
+/**
+ * Scales any numeric field to 0–1, for `:attr` bindings. A field a channel
+ * already scales (in `fixed`, field → scale) uses that scale, so `:size`
+ * and `size` agree; any other field spans its values across `rowSets`.
+ * Results are clamped to 0–1.
+ */
+export function unitScale(rowSets, fixed = new Map()) {
+  const cache = new Map(fixed);
+  return (field, value) => {
+    if (!isNumber(value)) return NaN;
+    if (!cache.has(field)) cache.set(field, linear(extent(rowSets.flatMap((rows) => rows.map((row) => row[field])))));
+    return Math.min(1, Math.max(0, cache.get(field)(value)));
+  };
+}
+
 export const isNumeric = isNumber;

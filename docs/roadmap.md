@@ -1,6 +1,6 @@
 # Roadmap
 
-What's built: `<data-plot>` (data from a table, JSON, or `.data`; linear,
+What's built: `<data-plot>` (data from a table, a datalist, JSON, or `.data`; linear,
 banded, and color scales), `<plot-marks>` (template marks, `x2`/`y2`
 ranges, `repeat`), `<plot-line>`, `<plot-axis>`, `<plot-legend>`, and the
 `:attr`/`{field}` template bindings. The demos cover scatter, bubble, line,
@@ -79,6 +79,9 @@ which is what makes a new chart type cheap.
 
 ### Also part of the core
 
+- **`src` URLs:** `src="rain.csv"` or `src="rain.json"` fetched and read
+  like an in-page source (CSV like a table, so numeric text becomes
+  numbers), with `error` on failure. Today `src` takes only an `#id`.
 - **Facets:** `<data-plot facet="region">` repeats its layers once per
   value, as a CSS grid of small plots sharing scales (or `independent-y`).
 - **Interaction:** a `select` event when a mark is clicked or focused,

@@ -58,27 +58,86 @@ test("editing the table replots, keeping each keyed mark's element", async ({ pa
   await expect(page.locator(".plot-dot")).toHaveCount(2);
 });
 
-test("data from JSON, a JSON script, or the property; bad JSON fires error and keeps the plot", async ({ page }) => {
+test("src: a JSON script, followed when it changes; bad JSON fires error and keeps the plot; .data wins until src changes", async ({ page }) => {
   await mount(page, `<script type="application/json" id="rows">[{"a": 1, "b": 2}, {"a": 3, "b": 4}]</script>
-    <data-plot data="#rows"><plot-marks x="a" y="b"></plot-marks></data-plot>`);
+    <script type="application/json" id="other">[{"a": 1, "b": 1}]</script>
+    <data-plot src="#rows"><plot-marks x="a" y="b"></plot-marks></data-plot>`);
   await expect(page.locator(".plot-dot")).toHaveCount(2);
   const result = await page.evaluate(async () => {
+    const tick = () => new Promise((r) => setTimeout(r, 0));
     const plot = document.querySelector("data-plot");
-    plot.setAttribute("data", '[[1, 2], [2, 3], [3, 1]]');
-    plot.querySelector("plot-marks").setAttribute("x", "0");
-    plot.querySelector("plot-marks").setAttribute("y", "1");
-    await new Promise((r) => setTimeout(r, 0));
-    const fromAttribute = plot.querySelectorAll(".plot-dot").length;
+    const count = () => plot.querySelectorAll(".plot-dot").length;
+    const script = document.querySelector("#rows");
+    script.textContent = '[{"a": 1, "b": 2}, {"a": 2, "b": 3}, {"a": 3, "b": 1}]';
+    await tick();
+    const edited = count();
     let message = null;
     plot.addEventListener("error", (event) => (message = event.message));
-    plot.setAttribute("data", "[nope");
-    await new Promise((r) => setTimeout(r, 0));
-    const afterError = plot.querySelectorAll(".plot-dot").length;
-    plot.data = [{ 0: 1, 1: 1 }];
-    await new Promise((r) => setTimeout(r, 0));
-    return { fromAttribute, message, afterError, fromProperty: plot.querySelectorAll(".plot-dot").length };
+    script.textContent = "[nope";
+    await tick();
+    const afterError = count();
+    plot.data = [{ a: 5, b: 5 }];
+    await tick();
+    const fromProperty = count();
+    // JSON is used as written: no string-to-number conversion.
+    const typed = typeof plot.data[0].a;
+    plot.src = "#other";
+    await tick();
+    const fromNewSrc = [count(), plot.data[0].b];
+    plot.src = "rows.json";
+    await tick();
+    return { edited, message, afterError, fromProperty, typed, fromNewSrc, urlError: message };
   });
-  expect(result).toEqual({ fromAttribute: 3, message: expect.stringContaining("data-plot"), afterError: 3, fromProperty: 1 });
+  expect(result).toMatchObject({ edited: 3, afterError: 3, fromProperty: 1, typed: "number", fromNewSrc: [1, 1] });
+  expect(result.urlError).toContain("only an #id");
+});
+
+test("a datalist: label, value, and data-* fields; edits replot", async ({ page }) => {
+  await mount(page, `<data-plot><datalist>
+      <option label="Mon" value="3" data-start-week="1"></option>
+      <option value="5">Tue</option>
+      <option>Wed</option>
+    </datalist><plot-marks x="label" y="value"></plot-marks></data-plot>`);
+  expect(await page.evaluate(() => document.querySelector("data-plot").data)).toEqual([
+    { label: "Mon", value: 3, startWeek: 1 },
+    { label: "Tue", value: 5 },
+    { label: "Wed", value: "Wed" },
+  ]);
+  await page.evaluate(() => document.querySelector("option").setAttribute("value", "4"));
+  await expect.poll(() => page.evaluate(() => document.querySelector("data-plot").data[0].value)).toBe(4);
+});
+
+test("one source, many readers: read once, and every reader follows its edits", async ({ page }) => {
+  await mount(page, `${TABLE.replace("<table>", '<table id="t">')}
+    <data-plot src="#t"><plot-marks x="a" y="b"></plot-marks></data-plot>
+    <plot-marks id="alone" src="#t"><template><b>{name}</b></template></plot-marks>`);
+  const same = await page.evaluate(() => document.querySelector("data-plot").data === document.querySelector("#alone").data);
+  expect(same).toBe(true);
+  await page.evaluate(() => document.querySelector("tbody").insertAdjacentHTML("beforeend", "<tr><td>s</td><td>2</td><td>4</td><td>two</td></tr>"));
+  await expect(page.locator("data-plot .plot-dot")).toHaveCount(4);
+  await expect(page.locator("#alone b")).toHaveText(["p", "q", "r", "s"]);
+});
+
+test("a layer's own data wins over its plot's, and the plot's scales cover both", async ({ page }) => {
+  await mount(page, `<data-plot>${TABLE}
+    <plot-marks x="a" y="b"></plot-marks>
+    <plot-marks class="mean" x="a" y="b"><datalist><option data-a="50" data-b="10"></option></datalist><template><i></i></template></plot-marks>
+  </data-plot>`);
+  const result = await page.evaluate(() => {
+    const plot = document.querySelector("data-plot");
+    return { domain: plot.scales.x.domain, mean: document.querySelector(".mean i").style.getPropertyValue("--x"), dots: document.querySelectorAll(".plot-dot").length };
+  });
+  expect(result).toEqual({ domain: [0, 50], mean: "1", dots: 3 });
+  // .data on a layer inside a plot isn't ignored.
+  await page.evaluate(() => (document.querySelector(".mean").data = [{ a: 25, b: 10 }]));
+  await expect.poll(() => page.evaluate(() => document.querySelector(".mean i").style.getPropertyValue("--x"))).toBe("1");
+  expect(await page.evaluate(() => document.querySelector("data-plot").scales.x.domain)).toEqual([0, 25]);
+});
+
+test("a source added later, inside the element, is picked up", async ({ page }) => {
+  await mount(page, `<data-plot><plot-marks x="a" y="b"></plot-marks></data-plot>`);
+  await page.evaluate(() => document.querySelector("data-plot").insertAdjacentHTML("afterbegin", '<script type="application/json">[{"a": 1, "b": 1}]</script>'));
+  await expect(page.locator(".plot-dot")).toHaveCount(1);
 });
 
 test("templates: :attr gets the field scaled 0–1, {field} the raw value", async ({ page }) => {
@@ -93,7 +152,7 @@ test("templates: :attr gets the field scaled 0–1, {field} the raw value", asyn
 });
 
 test("plot-marks alone stamps its own data, with no positions", async ({ page }) => {
-  await mount(page, `${TABLE.replace("<table>", '<table id="t">')}<plot-marks data="#t"><template><b>{name}</b></template></plot-marks>`);
+  await mount(page, `${TABLE.replace("<table>", '<table id="t">')}<plot-marks src="#t"><template><b>{name}</b></template></plot-marks>`);
   await expect(page.locator("plot-marks b")).toHaveText(["p", "q", "r"]);
   expect(await page.locator("plot-marks b").first().evaluate((el) => getComputedStyle(el).position)).toBe("static");
 });
@@ -112,9 +171,11 @@ test("axes: ticks at nice values, gridlines, a label; a line per series; a legen
 });
 
 test("a hidden table doesn't hide the drawing from assistive technology", async ({ page }) => {
-  await mount(page, `${TABLE.replace("<table>", '<table id="t" hidden>')}<data-plot data="#t"><plot-marks x="a" y="b"></plot-marks></data-plot>`);
+  await mount(page, `${TABLE.replace("<table>", '<table id="t" hidden>')}<data-plot src="#t" aria-label="Three points"><plot-marks x="a" y="b"></plot-marks></data-plot>`);
   await expect(page.locator(".plot-dot")).toHaveCount(3);
   await expect(page.locator("plot-marks")).not.toHaveAttribute("aria-hidden");
+  // Labelled and not described by a table: the plot is read as one image.
+  await expect(page.locator("data-plot")).toHaveAttribute("role", "img");
 });
 
 test("page CSS beats the defaults: a mark can be a bar", async ({ page }) => {
@@ -155,7 +216,8 @@ test("a banded y scale reads top to bottom, like its table", async ({ page }) =>
 });
 
 test("repeat stamps a row once per unit, with --index and --count; alone, color still applies", async ({ page }) => {
-  await mount(page, `<plot-marks data='[{"k": "a", "n": 3}, {"k": "b", "n": 2}, {"k": "c", "n": 0}]' repeat="n" color="k">
+  await mount(page, `<plot-marks repeat="value" color="k" aria-label="units">
+    <datalist><option value="3" data-k="a"></option><option value="2" data-k="b"></option><option value="0" data-k="c"></option></datalist>
     <template><i>{k}</i></template></plot-marks>`);
   await expect(page.locator("plot-marks i")).toHaveText(["a", "a", "a", "b", "b"]);
   const props = await vars(page, "plot-marks i", ["--index", "--count", "--color"]);
@@ -163,7 +225,7 @@ test("repeat stamps a row once per unit, with --index and --count; alone, color 
   expect(props[0]["--count"]).toBe("3");
   expect(props[0]["--color"]).not.toBe(props[3]["--color"]);
   // Fewer units removes the extra copies.
-  await page.evaluate(() => (document.querySelector("plot-marks").data = [{ k: "a", n: 1 }]));
+  await page.evaluate(() => (document.querySelector("plot-marks").data = [{ k: "a", value: 1 }]));
   await expect(page.locator("plot-marks i")).toHaveCount(1);
 });
 
@@ -192,4 +254,80 @@ test("cells can carry a machine value: data-value, <data value>, <time datetime>
   // Changing a <data value> re-reads the table.
   await page.evaluate(() => document.querySelector("data").setAttribute("value", "43"));
   await expect.poll(() => page.evaluate(() => document.querySelector("data-plot").data[0].b)).toBe(43);
+});
+
+test("every attribute has a matching property", async ({ page }) => {
+  await mount(page, `<data-plot><plot-marks></plot-marks><plot-line></plot-line><plot-axis></plot-axis><plot-legend></plot-legend></data-plot>`);
+  const result = await page.evaluate(() => {
+    const [plot, marks, line, axis, legend] = ["data-plot", "plot-marks", "plot-line", "plot-axis", "plot-legend"].map((tag) => document.querySelector(tag));
+    marks.x = "rain";
+    marks.x2 = "end";
+    marks.columnField = "month";
+    plot.yDomain = "0 auto";
+    plot.xPadding = 0.1;
+    axis.grid = true;
+    axis.ticks = 4;
+    line.color = "city";
+    legend.label = "Key";
+    const written = [marks.getAttribute("x"), marks.getAttribute("x2"), marks.getAttribute("column-field"), plot.getAttribute("y-domain"), plot.getAttribute("x-padding"), axis.hasAttribute("grid"), axis.getAttribute("ticks"), line.getAttribute("color"), legend.getAttribute("label")];
+    marks.setAttribute("key", "id");
+    axis.removeAttribute("grid");
+    marks.x = null;
+    return { written, read: [marks.key, axis.grid, marks.hasAttribute("x"), marks.y, plot.yPadding, axis.ticks] };
+  });
+  expect(result).toEqual({
+    written: ["rain", "end", "month", "0 auto", "0.1", true, "4", "city", "Key"],
+    read: ["id", false, false, "", 0.2, 4],
+  });
+});
+
+test(".mark builds marks from script, keeping each row's element; render fires after each draw", async ({ page }) => {
+  await mount(page, `<data-plot>${TABLE}<plot-marks x="a" y="b" key="name"></plot-marks></data-plot>`);
+  const result = await page.evaluate(async () => {
+    const tick = () => new Promise((r) => setTimeout(r, 0));
+    const plot = document.querySelector("data-plot");
+    const marks = plot.querySelector("plot-marks");
+    let renders = 0;
+    plot.addEventListener("render", () => renders++);
+    const calls = [];
+    marks.mark = (row, previous) => {
+      calls.push([row.name, Boolean(previous)]);
+      const star = previous ?? document.createElement("u");
+      star.textContent = row.name;
+      return star;
+    };
+    await tick();
+    const first = [...marks.querySelectorAll("u")];
+    // Changing the rows in place needs requestRender().
+    plot.data[0].name = "p";
+    plot.data[0].b = 0;
+    plot.requestRender();
+    await tick();
+    const kept = [...marks.querySelectorAll("u")].every((el, i) => el === first[i]);
+    return { calls, kept, dots: marks.querySelectorAll(".plot-dot").length, renders, x: first.map((el) => el.style.getPropertyValue("--x")) };
+  });
+  expect(result.calls).toEqual([["p", false], ["q", false], ["r", false], ["p", true], ["q", true], ["r", true]]);
+  expect(result).toMatchObject({ kept: true, dots: 0, renders: 2, x: ["0", "0.5", "1"] });
+});
+
+test("alone, a layer fires render, and the plot's frame rules apply to it too", async ({ page }) => {
+  await mount(page, `${TABLE.replace("<table>", '<table id="t">')}`);
+  const result = await page.evaluate(async () => {
+    const marks = Object.assign(document.createElement("plot-marks"), { src: "#t", color: "g" });
+    let renders = 0;
+    marks.addEventListener("render", () => renders++);
+    document.body.append(marks);
+    await new Promise((r) => setTimeout(r, 0));
+    return { renders, dots: marks.querySelectorAll(".plot-dot").length, color: Boolean(marks.querySelector(".plot-dot").style.getPropertyValue("--color")), hidden: marks.hasAttribute("aria-hidden") };
+  });
+  // A visible table describes the data, so the marks are hidden from assistive technology.
+  expect(result).toEqual({ renders: 1, dots: 3, color: true, hidden: true });
+});
+
+test("no readable table and no label: a console warning", async ({ page }) => {
+  const warnings = [];
+  page.on("console", (message) => message.type() === "warning" && warnings.push(message.text()));
+  await mount(page, `<data-plot><datalist><option value="1"></option></datalist><plot-marks x="label" y="value"></plot-marks></data-plot>`);
+  await expect.poll(() => warnings.length).toBe(1);
+  expect(warnings[0]).toContain("aria-label");
 });

@@ -7,7 +7,8 @@
 <style>
   :root { color-scheme: light dark; }
   body { font: 16px/1.8 system-ui, sans-serif; margin: 12px; max-width: 40em; }
-  /* A sparkline is a plot the size of a word: no axes, almost no margin. */
+  /* A sparkline is a plot the size of a word: no axes, almost no margin.
+     Its label says what it shows, so it's read as one image. */
   data-plot.spark {
     display: inline-block;
     vertical-align: middle;
@@ -25,12 +26,14 @@
 <body>
 <p>
   Visitors were steady all week
-  <data-plot class="spark" role="img" data="[[1,120],[2,132],[3,128],[4,140],[5,138],[6,170],[7,190]]" aria-label="rising from 120 to 190">
-    <plot-line x="0" y="1"></plot-line><plot-marks x="0" y="1"></plot-marks>
+  <data-plot class="spark" aria-label="rising from 120 to 190">
+    <datalist><option label="1" value="120"></option><option label="2" value="132"></option><option label="3" value="128"></option><option label="4" value="140"></option><option label="5" value="138"></option><option label="6" value="170"></option><option label="7" value="190"></option></datalist>
+    <plot-line x="label" y="value"></plot-line><plot-marks x="label" y="value"></plot-marks>
   </data-plot>
   until the weekend, when they reached 190, while sign-ups
-  <data-plot class="spark" role="img" data="[[1,9],[2,7],[3,8],[4,4],[5,5],[6,3],[7,2]]" aria-label="falling from 9 to 2" style="color: #ff725c">
-    <plot-line x="0" y="1"></plot-line><plot-marks x="0" y="1"></plot-marks>
+  <data-plot class="spark" aria-label="falling from 9 to 2" style="color: #ff725c">
+    <datalist><option label="1" value="9"></option><option label="2" value="7"></option><option label="3" value="8"></option><option label="4" value="4"></option><option label="5" value="5"></option><option label="6" value="3"></option><option label="7" value="2"></option></datalist>
+    <plot-line x="label" y="value"></plot-line><plot-marks x="label" y="value"></plot-marks>
   </data-plot>
   kept falling.
 </p>

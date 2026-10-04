@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../src/index.css" />
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  data-plot { --plot-margin: 28px 16px 32px 40px; --plot-height: 230px; }
+  .star { font-size: 18px; color: var(--color); translate: -50% 50%; }
+</style>
+</head>
+<body>
+<p id="status"></p>
+<button id="add">Add a point</button>
+<script type="module">
+  // Everything the markup does, from script: the same elements and the
+  // same properties, with .data instead of a source and .mark instead of
+  // a <template>.
+  import "../../src/global.mjs";
+
+  const plot = Object.assign(document.createElement("data-plot"), { yDomain: "0 auto" });
+  plot.setAttribute("aria-label", "Random points, colored by group");
+
+  const xAxis = Object.assign(document.createElement("plot-axis"), { scale: "x", grid: true });
+  const yAxis = Object.assign(document.createElement("plot-axis"), { scale: "y", grid: true });
+  const marks = Object.assign(document.createElement("plot-marks"), { x: "x", y: "y", color: "group", key: "id" });
+
+  // Called for each row with the element it had last time; keep it to update in place.
+  marks.mark = (row, previous) => {
+    const star = previous ?? Object.assign(document.createElement("span"), { className: "star", textContent: "★" });
+    star.title = `#${row.id}: (${row.x}, ${row.y})`;
+    return star;
+  };
+
+  plot.append(xAxis, yAxis, marks, document.createElement("plot-legend"));
+  document.body.prepend(plot);
+
+  const point = (id) => ({ id, x: Math.round(Math.random() * 100), y: Math.round(Math.random() * 50), group: id % 2 ? "odd" : "even" });
+  plot.data = Array.from({ length: 6 }, (_, i) => point(i));
+
+  // render fires after every draw.
+  plot.addEventListener("render", () => {
+    document.querySelector("#status").textContent = `${plot.data.length} points; x runs ${plot.scales.x.domain.join("–")}.`;
+  });
+  // Assign a new array; changing the old one in place would need plot.requestRender().
+  document.querySelector("#add").onclick = () => (plot.data = [...plot.data, point(plot.data.length)]);
+</script>
+</body>
+</html>

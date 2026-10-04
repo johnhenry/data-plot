@@ -12,7 +12,7 @@
   <h1>markable</h1>
   <p class="lede">
     Plots written as HTML. A <code>&lt;data-plot&gt;</code> reads rows (from a
-    <code>&lt;table&gt;</code>, JSON, or a <code>.data</code> property) and
+    <code>&lt;table&gt;</code>, a <code>&lt;datalist&gt;</code>, JSON, or a <code>.data</code> property) and
     works out the scales; layers inside it draw. Marks are copies of a
     <code>&lt;template&gt;</code> placed by CSS custom properties
     (<code>--x</code>, <code>--y</code>, <code>--color</code>, <code>--size</code>),
@@ -23,6 +23,7 @@
     <a href="#plots">Plots</a>
     <a href="#same-marks">Same marks, other charts</a>
     <a href="#ranges">Ranges</a>
+    <a href="#script">From script</a>
     <a href="#glyphs">Glyphs</a>
   </nav>
   <label class="toggle-source"><input type="checkbox" id="show-source" checked /> Show each example's source beside it</label>
@@ -80,6 +81,14 @@
       <h3>Error bars</h3>
       <p><code>y</code> to <code>y2</code> for each interval, caps drawn by CSS, and the mean as a second layer.</p>
       <iframe src="examples/errorbars.html"></iframe>
+    </div>
+  </div>
+  <h2 id="script">From script <span class="count">the same API, imperatively</span></h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>No markup at all</h3>
+      <p>The elements built with <code>createElement</code>, set up through their properties, fed with <code>.data</code>, drawn with <code>.mark</code> instead of a template, and watched with the <code>render</code> event.</p>
+      <iframe src="examples/script.html"></iframe>
     </div>
   </div>
   <h2 id="glyphs">Glyphs</h2>

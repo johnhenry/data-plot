@@ -1,6 +1,7 @@
-/* Defaults for the plot elements. Everything is in the light DOM, and the
-   placement rules are wrapped in :where(), so any page rule overrides them; the custom properties are the
-   contract: a mark gets --x and --y (0…1, from the left and the bottom),
+/* Defaults for the plot elements. Everything is in the light DOM, and
+   every rule here is wrapped in :where() (no specificity), so any page rule
+   overrides it. Where two defaults overlap, the later one wins. The custom
+   properties are the contract: a mark gets --x and --y (0…1, from the left and the bottom),
    --color, --size (0…1), and on a banded scale --bandwidth/--bandheight. */
 
 /* Registered so they animate between draws. */
@@ -12,7 +13,7 @@
 @property --y-start { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --y-length { syntax: "<number>"; inherits: true; initial-value: 0; }
 
-data-plot {
+:where(data-plot) {
   display: block;
   position: relative;
   block-size: var(--plot-height, 300px);
@@ -26,7 +27,7 @@ data-plot {
 :where(data-plot > plot-marks > :not(template)) { pointer-events: auto; }
 
 /* The table a plot reads stays available to assistive technology. */
-data-plot > table[data-plot-source] {
+:where(table[data-plot-source]) {
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
@@ -55,7 +56,7 @@ data-plot > table[data-plot-source] {
 }
 :where(data-plot > plot-marks[x2][y2] > :not(template)) { translate: 0 0; }
 
-.plot-dot {
+:where(.plot-dot) {
   display: block;
   inline-size: calc(8px + var(--size) * 16px);
   block-size: calc(8px + var(--size) * 16px);
@@ -64,20 +65,20 @@ data-plot > table[data-plot-source] {
 }
 /* A range with no template is a bar along it: thin across a numeric
    scale, a band thick across a banded one. */
-plot-marks[x2] > .plot-dot { border-radius: 2px; inline-size: calc(var(--x-length) * 100%); block-size: max(6px, calc(var(--bandheight, 0) * 100%)); }
-plot-marks[y2] > .plot-dot { border-radius: 2px; block-size: calc(var(--y-length) * 100%); inline-size: max(6px, calc(var(--bandwidth, 0) * 100%)); }
+:where(plot-marks[x2] > .plot-dot) { border-radius: 2px; inline-size: calc(var(--x-length) * 100%); block-size: max(6px, calc(var(--bandheight, 0) * 100%)); }
+:where(plot-marks[y2] > .plot-dot) { border-radius: 2px; block-size: calc(var(--y-length) * 100%); inline-size: max(6px, calc(var(--bandwidth, 0) * 100%)); }
 @media (prefers-reduced-motion: no-preference) {
   :where(plot-marks > :not(template)) { transition: --x 0.5s, --y 0.5s, --size 0.5s, --x-start 0.5s, --x-length 0.5s, --y-start 0.5s, --y-length 0.5s, background-color 0.5s; }
 }
 
 /* Lines. */
-plot-line svg {
+:where(plot-line svg) {
   display: block;
   inline-size: 100%;
   block-size: 100%;
   overflow: visible;
 }
-plot-line path {
+:where(plot-line path) {
   fill: none;
   stroke: var(--color, currentColor);
   stroke-width: 2;
@@ -86,27 +87,27 @@ plot-line path {
 }
 
 /* Axes: tick labels in the margin, gridlines across the area. */
-plot-axis:not([scale="y"]) { border-block-end: 1px solid color-mix(in srgb, currentColor 45%, transparent); }
-plot-axis[scale="y"] { border-inline-start: 1px solid color-mix(in srgb, currentColor 45%, transparent); }
-plot-axis .plot-tick {
+:where(plot-axis:not([scale="y"])) { border-block-end: 1px solid color-mix(in srgb, currentColor 45%, transparent); }
+:where(plot-axis[scale="y"]) { border-inline-start: 1px solid color-mix(in srgb, currentColor 45%, transparent); }
+:where(plot-axis .plot-tick) {
   position: absolute;
   white-space: nowrap;
   color: color-mix(in srgb, currentColor 70%, transparent);
   font-variant-numeric: tabular-nums;
 }
-plot-axis:not([scale="y"]) .plot-tick { top: 100%; left: calc(var(--at) * 100%); translate: -50% 0; padding-top: 4px; }
-plot-axis[scale="y"] .plot-tick { right: 100%; bottom: calc(var(--at) * 100%); translate: 0 50%; padding-right: 6px; }
-plot-axis .plot-gridline { position: absolute; background: color-mix(in srgb, currentColor 12%, transparent); }
-plot-axis:not([scale="y"]) .plot-gridline { top: 0; bottom: 0; left: calc(var(--at) * 100%); inline-size: 1px; }
-plot-axis[scale="y"] .plot-gridline { left: 0; right: 0; bottom: calc(var(--at) * 100%); block-size: 1px; }
-plot-axis .plot-axis-label { position: absolute; font-weight: 600; white-space: nowrap; }
-plot-axis:not([scale="y"]) .plot-axis-label { top: 100%; right: 0; padding-top: 18px; }
-plot-axis[scale="y"] .plot-axis-label { bottom: 100%; left: 0; translate: -50% -4px; }
+:where(plot-axis:not([scale="y"]) .plot-tick) { top: 100%; left: calc(var(--at) * 100%); translate: -50% 0; padding-top: 4px; }
+:where(plot-axis[scale="y"] .plot-tick) { right: 100%; bottom: calc(var(--at) * 100%); translate: 0 50%; padding-right: 6px; }
+:where(plot-axis .plot-gridline) { position: absolute; background: color-mix(in srgb, currentColor 12%, transparent); }
+:where(plot-axis:not([scale="y"]) .plot-gridline) { top: 0; bottom: 0; left: calc(var(--at) * 100%); inline-size: 1px; }
+:where(plot-axis[scale="y"] .plot-gridline) { left: 0; right: 0; bottom: calc(var(--at) * 100%); block-size: 1px; }
+:where(plot-axis .plot-axis-label) { position: absolute; font-weight: 600; white-space: nowrap; }
+:where(plot-axis:not([scale="y"]) .plot-axis-label) { top: 100%; right: 0; padding-top: 18px; }
+:where(plot-axis[scale="y"] .plot-axis-label) { bottom: 100%; left: 0; translate: -50% -4px; }
 
 /* Legend. */
-plot-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font-size: 12px; }
+:where(plot-legend) { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font-size: 12px; }
 :where(data-plot > plot-legend) { position: absolute; top: 0; right: 0; }
-plot-legend .plot-legend-label { font-weight: 600; }
-plot-legend .plot-legend-item { display: inline-flex; gap: 4px; align-items: center; }
-plot-legend .plot-swatch { inline-size: 10px; block-size: 10px; border-radius: 2px; background: var(--color); }
-plot-legend .plot-ramp { inline-size: 80px; block-size: 10px; border-radius: 2px; background: linear-gradient(to right, var(--low), var(--high)); }
+:where(plot-legend .plot-legend-label) { font-weight: 600; }
+:where(plot-legend .plot-legend-item) { display: inline-flex; gap: 4px; align-items: center; }
+:where(plot-legend .plot-swatch) { inline-size: 10px; block-size: 10px; border-radius: 2px; background: var(--color); }
+:where(plot-legend .plot-ramp) { inline-size: 80px; block-size: 10px; border-radius: 2px; background: linear-gradient(to right, var(--low), var(--high)); }

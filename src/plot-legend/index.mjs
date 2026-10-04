@@ -1,4 +1,7 @@
-import PlotLayer from "../layer.mjs";
+import { PlotLayer } from "../layer.mjs";
+import { reflect } from "../reflect.mjs";
+
+const ATTRIBUTES = { label: "string" };
 
 /**
  * A key to the plot's colors: a swatch per category, or a gradient with
@@ -10,7 +13,7 @@ import PlotLayer from "../layer.mjs";
  * @attr {string} label - A title for the legend.
  */
 export default class PlotLegend extends PlotLayer {
-  static observedAttributes = ["label"];
+  static observedAttributes = Object.keys(ATTRIBUTES);
 
   draw(context) {
     super.draw(context);
@@ -36,3 +39,5 @@ export default class PlotLegend extends PlotLayer {
     this.replaceChildren(...parts);
   }
 }
+
+reflect(PlotLegend, ATTRIBUTES);

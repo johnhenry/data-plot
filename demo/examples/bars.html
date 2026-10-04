@@ -22,21 +22,29 @@
 </style>
 </head>
 <body>
-<data-plot data='[{"day": "Mon", "cups": 3}, {"day": "Tue", "cups": 5}, {"day": "Wed", "cups": 2},
-                  {"day": "Thu", "cups": 6}, {"day": "Fri", "cups": 4}]' y-domain="0 auto">
+<!-- A datalist holds data without showing it: each option's label and value. -->
+<data-plot y-domain="0 auto" aria-label="Cups of coffee per day, Monday to Friday">
+  <datalist>
+    <option label="Mon" value="3"></option>
+    <option label="Tue" value="5"></option>
+    <option label="Wed" value="2"></option>
+    <option label="Thu" value="6"></option>
+    <option label="Fri" value="4"></option>
+  </datalist>
   <plot-axis scale="y" grid ticks="3"></plot-axis>
   <plot-axis scale="x"></plot-axis>
-  <plot-marks x="day" y="cups" key="day">
-    <template><div class="bar"><span>{cups}</span></div></template>
+  <plot-marks x="label" y="value" key="label">
+    <template><div class="bar"><span>{value}</span></div></template>
   </plot-marks>
 </data-plot>
 
 <button id="more">Another week</button>
 <script type="module">
-  // Setting .data replots; bars keep their element (key="day"), so they grow and shrink.
+  // From script: .data replaces the rows (until src changes). Bars keep their
+  // element (key="label"), so they grow and shrink.
   const plot = document.querySelector("data-plot");
   document.querySelector("#more").onclick = () => {
-    plot.data = plot.data.map((row) => ({ ...row, cups: 1 + Math.floor(Math.random() * 8) }));
+    plot.data = plot.data.map((row) => ({ ...row, value: 1 + Math.floor(Math.random() * 8) }));
   };
 </script>
 </body>

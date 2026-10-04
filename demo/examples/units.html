@@ -29,16 +29,17 @@
   </tbody>
 </table>
 
-<!-- No <data-plot>: plot-marks alone, with color, but no positions. -->
-<plot-marks class="waffle" data="#answers" repeat="count" color="answer" aria-hidden="true">
+<!-- No <data-plot>: plot-marks alone, with color, but no positions. The
+     table says it all, so the squares are hidden from screen readers. -->
+<plot-marks class="waffle" src="#answers" repeat="count" color="answer">
   <template><span class="square" title="{answer}"></span></template>
 </plot-marks>
 </div>
 
 <dl>
-  <dt>Mon</dt><dd><plot-marks data='[{"cups": 3}]' repeat="cups" role="img" aria-label="3 cups"><template><span>☕</span></template></plot-marks></dd>
-  <dt>Tue</dt><dd><plot-marks data='[{"cups": 5}]' repeat="cups" role="img" aria-label="5 cups"><template><span>☕</span></template></plot-marks></dd>
-  <dt>Wed</dt><dd><plot-marks data='[{"cups": 1}]' repeat="cups" role="img" aria-label="1 cup"><template><span>☕</span></template></plot-marks></dd>
+  <dt>Mon</dt><dd><plot-marks repeat="value" aria-label="3 cups"><datalist><option value="3"></option></datalist><template><span>☕</span></template></plot-marks></dd>
+  <dt>Tue</dt><dd><plot-marks repeat="value" aria-label="5 cups"><datalist><option value="5"></option></datalist><template><span>☕</span></template></plot-marks></dd>
+  <dt>Wed</dt><dd><plot-marks repeat="value" aria-label="1 cup"><datalist><option value="1"></option></datalist><template><span>☕</span></template></plot-marks></dd>
 </dl>
 </body>
 </html>

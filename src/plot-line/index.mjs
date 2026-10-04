@@ -1,11 +1,14 @@
-import PlotLayer from "../layer.mjs";
+import { DataLayer } from "../layer.mjs";
+import { reflect } from "../reflect.mjs";
+
+const ATTRIBUTES = { x: "string", y: "string", color: "string", src: "string", "column-field": "string", "value-field": "string" };
 
 const SVG = "http://www.w3.org/2000/svg";
 
 /**
  * A line through the rows, in x order: one line per value of `color`, if
  * given. Drawn as SVG stretched over the plotting area, with strokes that
- * keep their width.
+ * keep their width. It needs a plot's scales, so alone it draws nothing.
  *
  * @tag plot-line
  * @summary A line through the rows, one per series.
@@ -13,11 +16,14 @@ const SVG = "http://www.w3.org/2000/svg";
  * @attr {string} x - Field for horizontal position.
  * @attr {string} y - Field for vertical position.
  * @attr {string} color - Field that splits the rows into series, each its own color.
+ * @attr {string} src - `#id` of a `<table>`, `<datalist>`, or JSON `<script>` with this layer's own rows. Default: one inside it, else its plot's rows.
+ * @attr {string} column-field - Reads a grid table, as on `<data-plot>`.
+ * @attr {string} value-field - See `column-field`.
  *
  * @cssprop --color - A series' color, set on its `<path>`. Default `currentColor`.
  */
-export default class PlotLine extends PlotLayer {
-  static observedAttributes = ["x", "y", "color"];
+export default class PlotLine extends DataLayer {
+  static observedAttributes = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
 
   #svg = null;
 
@@ -62,3 +68,5 @@ export default class PlotLine extends PlotLayer {
     for (const extra of paths.slice(i)) extra.remove();
   }
 }
+
+reflect(PlotLine, ATTRIBUTES);

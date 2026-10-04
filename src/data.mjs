@@ -1,5 +1,5 @@
-// Reading data: from a <table>, JSON, or any iterable of objects. Rows come
-// out as plain objects keyed by column name, with numeric text as numbers.
+// Reading data: from a <table>, a <datalist>, JSON, or any iterable of
+// objects. Rows come out as plain objects keyed by field name.
 
 /** "42" → 42, "  3.5 " → 3.5, "" → "", "Q1" → "Q1". */
 export function coerce(text) {
@@ -62,15 +62,27 @@ export function normalize(rows) {
 }
 
 /**
- * The rows a `data` attribute names: JSON (`[…]`), or a selector for a
- * `<table>` or a `<script type="application/json">`. `shape` is passed to
- * readTable for a grid table. Throws on bad JSON.
+ * A datalist's rows: one per `<option>`, with `value` (its `value`, else
+ * its text), `label` (its `label`, else its text), and a field for each
+ * `data-*` attribute, named as `dataset` names it (`data-start-week` is
+ * `startWeek`). Text is read like a table cell's: "42" is 42.
  */
-export function resolve(spec, root = document, shape = {}) {
-  const text = spec.trim();
-  if (text.startsWith("[")) return { rows: normalize(JSON.parse(text)), source: null };
-  const source = root.querySelector(text);
-  if (!source) return { rows: [], source: null };
-  if (source instanceof HTMLTableElement) return { rows: readTable(source, shape), source };
-  return { rows: normalize(JSON.parse(source.textContent)), source };
+export function readDatalist(list) {
+  return [...list.querySelectorAll("option")].map((option) => {
+    const row = { label: coerce(option.label), value: coerce(option.value) };
+    for (const [name, value] of Object.entries(option.dataset)) row[name] = coerce(value);
+    return row;
+  });
+}
+
+/**
+ * The rows in a source element: a `<table>` (`shape` reads a grid table;
+ * see readTable), a `<datalist>`, or a `<script type="application/json">`.
+ * Text sources turn numeric text into numbers; JSON is used as written.
+ * Throws on bad JSON.
+ */
+export function readSource(element, shape = {}) {
+  if (element.localName === "table") return readTable(element, shape);
+  if (element.localName === "datalist") return readDatalist(element);
+  return normalize(JSON.parse(element.textContent));
 }

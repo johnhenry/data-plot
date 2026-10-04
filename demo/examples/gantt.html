@@ -25,31 +25,32 @@
 </style>
 </head>
 <body>
-<data-plot x-domain="0 auto" y-padding="0.3">
-  <table>
-    <thead><tr><th>task</th><th>team</th><th>start</th><th>end</th><th>due</th></tr></thead>
-    <tbody>
-      <tr><td>Research</td><td>Design</td><td>0</td><td>3</td><td></td></tr>
-      <tr><td>Prototype</td><td>Design</td><td>2</td><td>6</td><td>6</td></tr>
-      <tr><td>Build</td><td>Engineering</td><td>5</td><td>12</td><td></td></tr>
-      <tr><td>Test</td><td>Engineering</td><td>10</td><td>14</td><td>14</td></tr>
-      <tr><td>Launch</td><td>Marketing</td><td>13</td><td>16</td><td>16</td></tr>
-    </tbody>
-  </table>
+<!-- A datalist: one option per task. label and value are built in; any
+     data-* attribute is another field (data-team is "team"). -->
+<datalist id="plan">
+  <option label="Research" data-team="Design" data-start="0" data-end="3"></option>
+  <option label="Prototype" data-team="Design" data-start="2" data-end="6" data-due="6"></option>
+  <option label="Build" data-team="Engineering" data-start="5" data-end="12"></option>
+  <option label="Test" data-team="Engineering" data-start="10" data-end="14" data-due="14"></option>
+  <option label="Launch" data-team="Marketing" data-start="13" data-end="16" data-due="16"></option>
+</datalist>
+
+<data-plot src="#plan" x-domain="0 auto" y-padding="0.3" aria-label="Project plan: five tasks across sixteen weeks, from research to launch">
   <plot-axis scale="x" label="Week" grid></plot-axis>
   <plot-axis scale="y"></plot-axis>
-  <plot-marks x="start" x2="end" y="task" color="team" key="task">
-    <template><div class="task" title="{task}: weeks {start}–{end}">{team}</div></template>
+  <plot-marks x="start" x2="end" y="label" color="team" key="label">
+    <template><div class="task" title="{label}: weeks {start}–{end}">{team}</div></template>
   </plot-marks>
   <!-- A second layer on the same scales: a diamond at each due date. -->
-  <plot-marks x="due" y="task"><template><span class="milestone"></span></template></plot-marks>
+  <plot-marks x="due" y="label"><template><span class="milestone"></span></template></plot-marks>
   <plot-legend></plot-legend>
 </data-plot>
 <button id="slip">Build slips two weeks</button>
 <script type="module">
+  // Edit the datalist and the plot follows.
   document.querySelector("#slip").onclick = () => {
-    const end = document.querySelector("tbody tr:nth-child(3) td:nth-child(4)");
-    end.textContent = end.textContent === "12" ? "14" : "12";
+    const build = document.querySelector('option[label="Build"]');
+    build.dataset.end = build.dataset.end === "12" ? "14" : "12";
   };
 </script>
 </body>
