@@ -166,3 +166,30 @@ test("repeat stamps a row once per unit, with --index and --count; alone, color 
   await page.evaluate(() => (document.querySelector("plot-marks").data = [{ k: "a", n: 1 }]));
   await expect(page.locator("plot-marks i")).toHaveCount(1);
 });
+
+test("a grid table: column headers become a field, each cell a row; empty cells are skipped", async ({ page }) => {
+  await mount(page, `<data-plot column-field="month" value-field="mm">
+    <table><thead><tr><th>city</th><th>Jan</th><th>Feb</th></tr></thead>
+      <tbody><tr><th>Rome</th><td>67</td><td>58</td></tr><tr><th>Oslo</th><td>49</td><td></td></tr></tbody></table>
+    <plot-marks x="month" y="city" color="mm"></plot-marks></data-plot>`);
+  expect(await page.evaluate(() => document.querySelector("data-plot").data)).toEqual([
+    { city: "Rome", month: "Jan", mm: 67 },
+    { city: "Rome", month: "Feb", mm: 58 },
+    { city: "Oslo", month: "Jan", mm: 49 },
+  ]);
+  await expect(page.locator(".plot-dot")).toHaveCount(3);
+  // Filling the empty cell adds its mark.
+  await page.evaluate(() => (document.querySelector("tbody tr:last-child td:last-child").textContent = "40"));
+  await expect(page.locator(".plot-dot")).toHaveCount(4);
+});
+
+test("cells can carry a machine value: data-value, <data value>, <time datetime>", async ({ page }) => {
+  await mount(page, `<data-plot><table>
+    <thead><tr><th>a</th><th>b</th><th>c</th><th>d</th></tr></thead>
+    <tbody><tr><td data-value="1200000">$1.2M</td><td><data value="42">forty-two</data></td><td><time datetime="2026-10-04">Oct 4</time></td><td>about <data value="7">seven</data></td></tr></tbody>
+    </table></data-plot>`);
+  expect(await page.evaluate(() => document.querySelector("data-plot").data)).toEqual([{ a: 1200000, b: 42, c: "2026-10-04", d: "about seven" }]);
+  // Changing a <data value> re-reads the table.
+  await page.evaluate(() => document.querySelector("data").setAttribute("value", "43"));
+  await expect.poll(() => page.evaluate(() => document.querySelector("data-plot").data[0].b)).toBe(43);
+});

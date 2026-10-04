@@ -17,6 +17,8 @@ const AXIS = { x: "x", x2: "x", y: "y", y2: "y", color: "color", size: "size" };
  * @attr {string} y-domain - The y scale's ends, like `0 auto`.
  * @attr {number} x-padding - On a banded x scale, the share of each band left empty, 0–1. Default 0.2.
  * @attr {number} y-padding - The same for a banded y scale.
+ * @attr {string} column-field - With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field.
+ * @attr {string} value-field - With `column-field`: the field each cell's value becomes.
  *
  * @fires error - The data couldn't be read (bad JSON). An `ErrorEvent`; the previous data stays plotted.
  *
@@ -24,7 +26,7 @@ const AXIS = { x: "x", x2: "x", y: "y", y2: "y", color: "color", size: "size" };
  * @cssprop --plot-height - Default height. Default `300px`.
  */
 export default class DataPlot extends HTMLElement {
-  static observedAttributes = ["data", "x-domain", "y-domain", "x-padding", "y-padding"];
+  static observedAttributes = ["data", "x-domain", "y-domain", "x-padding", "y-padding", "column-field", "value-field"];
 
   #rows = [];
   #property = null;
@@ -107,6 +109,10 @@ export default class DataPlot extends HTMLElement {
     return Boolean(table && (table.parentElement === this || !table.closest("[hidden], [aria-hidden=true]")));
   }
 
+  #shape() {
+    return { columnField: this.getAttribute("column-field"), valueField: this.getAttribute("value-field") };
+  }
+
   #read() {
     this.#observer?.disconnect();
     this.#source = null;
@@ -115,12 +121,12 @@ export default class DataPlot extends HTMLElement {
       if (this.#property) {
         this.#rows = this.#property;
       } else if (spec) {
-        const { rows, source } = resolve(spec, this.getRootNode());
+        const { rows, source } = resolve(spec, this.getRootNode(), this.#shape());
         this.#rows = rows;
         this.#source = source instanceof HTMLTableElement ? source : null;
       } else {
         const table = this.querySelector(":scope > table");
-        this.#rows = table ? readTable(table) : [];
+        this.#rows = table ? readTable(table, this.#shape()) : [];
         this.#source = table;
       }
     } catch (error) {
@@ -131,10 +137,10 @@ export default class DataPlot extends HTMLElement {
       if (this.#source.parentElement === this) this.#source.setAttribute("data-plot-source", "");
       // Edit the table and the plot follows.
       this.#observer = new MutationObserver(() => {
-        this.#rows = readTable(this.#source);
+        this.#rows = readTable(this.#source, this.#shape());
         this.requestRender();
       });
-      this.#observer.observe(this.#source, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["data-value", "data-field"] });
+      this.#observer.observe(this.#source, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["data-value", "data-field", "value", "datetime"] });
     }
   }
 }

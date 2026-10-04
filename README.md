@@ -47,6 +47,12 @@ A plot maps data fields onto a mark's attributes through scales.
   so a CSS transition moves them. Editing the table replots.
 - **Accessible by default.** When the data is a readable table, it stays
   available to screen readers and the drawing is hidden from them.
+- **Tables in either shape.** A long table (a row per data point) is read
+  as is. A grid table (a row per item, a column per category, like a
+  heatmap written out) is read with `column-field="month"
+  value-field="mm"`: the column headers become `month`, each cell an
+  `mm`. A cell can show one thing and carry another with `data-value`, a
+  `<data value>`, or a `<time datetime>`.
 - **Ranges:** `x2`/`y2` give a mark a second end on the same scale
   (`--x-start`, `--x-length`, and the same for y), and the default CSS
   stretches it between them: Gantt bars, dumbbells, error bars.

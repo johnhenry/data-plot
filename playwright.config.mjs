@@ -6,10 +6,11 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? "github" : "list",
-  use: { baseURL: "http://localhost:4739/" },
+  // Its own port, so a dev server on 4739 can keep running.
+  use: { baseURL: "http://localhost:4749/" },
   webServer: {
-    command: "node scripts/serve.mjs",
-    url: "http://localhost:4739/package.json",
+    command: "PORT=4749 node scripts/serve.mjs",
+    url: "http://localhost:4749/package.json",
     // Never reuse whatever already listens on the port.
     reuseExistingServer: false,
   },

@@ -26,9 +26,11 @@ import { color } from "../scale.mjs";
  * @attr {string} key - Field that identifies a row across updates. Default: its position.
  * @attr {string} repeat - Field with a count: the row is stamped that many times (a unit or waffle chart). Each copy gets `--index` and `--count`.
  * @attr {string} data - Only outside a `<data-plot>`: JSON rows, or a selector for a `<table>` or JSON `<script>`.
+ * @attr {string} column-field - Only outside a `<data-plot>`: reads a grid table, as on `<data-plot>`.
+ * @attr {string} value-field - Only outside a `<data-plot>`: see `column-field`.
  */
 export default class PlotMarks extends PlotLayer {
-  static observedAttributes = ["x", "x2", "y", "y2", "color", "size", "key", "repeat", "data"];
+  static observedAttributes = ["x", "x2", "y", "y2", "color", "size", "key", "repeat", "data", "column-field", "value-field"];
 
   #marks = new Map();
   #rows = null;
@@ -44,7 +46,7 @@ export default class PlotMarks extends PlotLayer {
 
   attributeChangedCallback(name) {
     super.attributeChangedCallback();
-    if (name === "data") this.#rows = null;
+    if (name === "data" || name === "column-field" || name === "value-field") this.#rows = null;
     if (this.isConnected && !this.plot) this.#drawAlone();
   }
 
@@ -60,7 +62,7 @@ export default class PlotMarks extends PlotLayer {
   #drawAlone() {
     if (!this.#rows && this.hasAttribute("data")) {
       try {
-        this.#rows = resolve(this.getAttribute("data"), this.getRootNode()).rows;
+        this.#rows = resolve(this.getAttribute("data"), this.getRootNode(), { columnField: this.getAttribute("column-field"), valueField: this.getAttribute("value-field") }).rows;
       } catch (error) {
         this.dispatchEvent(new ErrorEvent("error", { error, message: `plot-marks: ${error.message}` }));
         return;

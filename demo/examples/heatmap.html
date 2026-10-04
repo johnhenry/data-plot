@@ -23,8 +23,19 @@
 </style>
 </head>
 <body>
-<!-- Two banded scales (month across, city up) and a numeric color. -->
-<data-plot data="#rain" x-padding="0.08" y-padding="0.08">
+<!-- The data is the table you'd write anyway: a row per city, a column per
+     month. column-field and value-field say how to read it: each column
+     header is a month, each cell is mm of rain. -->
+<data-plot column-field="month" value-field="mm" x-padding="0.08" y-padding="0.08">
+  <table>
+    <caption>Rainfall (mm)</caption>
+    <thead><tr><th>city</th><th>Jan</th><th>Mar</th><th>May</th><th>Jul</th><th>Sep</th><th>Nov</th></tr></thead>
+    <tbody>
+      <tr><th>Rome</th><td>67</td><td>58</td><td>38</td><td>15</td><td>69</td><td>113</td></tr>
+      <tr><th>London</th><td>55</td><td>41</td><td>49</td><td>45</td><td>49</td><td>59</td></tr>
+      <tr><th>Bergen</th><td>250</td><td>180</td><td>110</td><td>140</td><td>260</td><td>280</td></tr>
+    </tbody>
+  </table>
   <plot-axis scale="x"></plot-axis>
   <plot-axis scale="y"></plot-axis>
   <plot-marks x="month" y="city" color="mm">
@@ -32,19 +43,5 @@
   </plot-marks>
   <plot-legend label="mm"></plot-legend>
 </data-plot>
-
-<script type="application/json" id="rain">
-  [
-    {"city": "Rome", "month": "Jan", "mm": 67}, {"city": "Rome", "month": "Mar", "mm": 58},
-    {"city": "Rome", "month": "May", "mm": 38}, {"city": "Rome", "month": "Jul", "mm": 15},
-    {"city": "Rome", "month": "Sep", "mm": 69}, {"city": "Rome", "month": "Nov", "mm": 113},
-    {"city": "London", "month": "Jan", "mm": 55}, {"city": "London", "month": "Mar", "mm": 41},
-    {"city": "London", "month": "May", "mm": 49}, {"city": "London", "month": "Jul", "mm": 45},
-    {"city": "London", "month": "Sep", "mm": 49}, {"city": "London", "month": "Nov", "mm": 59},
-    {"city": "Bergen", "month": "Jan", "mm": 250}, {"city": "Bergen", "month": "Mar", "mm": 180},
-    {"city": "Bergen", "month": "May", "mm": 110}, {"city": "Bergen", "month": "Jul", "mm": 140},
-    {"city": "Bergen", "month": "Sep", "mm": 260}, {"city": "Bergen", "month": "Nov", "mm": 280}
-  ]
-</script>
 </body>
 </html>

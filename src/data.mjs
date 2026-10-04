@@ -10,11 +10,29 @@ export function coerce(text) {
 }
 
 /**
- * A table's rows as objects. Column names are the header cells (`<thead>`'s
- * last row, else the first row's `<th>`s); a cell's `data-value`, if
- * present, wins over its text, so "$1.2M" can carry 1200000.
+ * A cell's value: its `data-value`, else a `<data value>` or
+ * `<time datetime>` that is its only content, else its text. So a cell can
+ * show "$1.2M" or "Oct 4" and carry 1200000 or 2026-10-04.
  */
-export function readTable(table) {
+export function cellValue(cell) {
+  if (cell.dataset.value !== undefined) return coerce(cell.dataset.value);
+  const only = cell.children.length === 1 && cell.textContent.trim() === cell.firstElementChild.textContent.trim() ? cell.firstElementChild : null;
+  if (only?.localName === "data" && only.hasAttribute("value")) return coerce(only.getAttribute("value"));
+  if (only?.localName === "time" && only.hasAttribute("datetime")) return only.getAttribute("datetime");
+  return coerce(cell.textContent);
+}
+
+/**
+ * A table's rows as objects. Column names are the header cells (`<thead>`'s
+ * last row, else the first row's `<th>`s), or a header's `data-field`.
+ *
+ * A grid table (one row per item, one column per category, a value in each
+ * cell, like a heatmap written out) is read with `columnField` and
+ * `valueField`: each cell becomes its own row, `{ [corner]: row header,
+ * [columnField]: column header, [valueField]: cell }`, where `corner` is the
+ * top-left header's text (or "row"). Empty cells are skipped.
+ */
+export function readTable(table, { columnField, valueField } = {}) {
   const rows = [...table.rows];
   if (!rows.length) return [];
   let header = table.tHead?.rows[table.tHead.rows.length - 1];
@@ -23,9 +41,18 @@ export function readTable(table) {
     ? [...header.cells].map((cell, i) => cell.dataset.field ?? (cell.textContent.trim() || String(i)))
     : [...rows[0].cells].map((_, i) => String(i));
   const body = rows.filter((row) => row !== header && row.parentElement?.localName !== "thead" && row.parentElement?.localName !== "tfoot");
-  return body.map((row) =>
-    Object.fromEntries([...row.cells].map((cell, i) => [names[i] ?? String(i), coerce(cell.dataset.value ?? cell.textContent)])),
-  );
+  if (columnField && valueField) {
+    const corner = header?.cells[0]?.dataset.field ?? (header?.cells[0]?.textContent.trim() || "row");
+    const categories = header ? [...header.cells].slice(1).map((cell) => cellValue(cell)) : [];
+    return body.flatMap((row) => {
+      const [first, ...cells] = row.cells;
+      const item = first ? cellValue(first) : "";
+      return cells
+        .map((cell, i) => ({ [corner]: item, [columnField]: categories[i] ?? String(i + 1), [valueField]: cellValue(cell) }))
+        .filter((entry) => entry[valueField] !== "");
+    });
+  }
+  return body.map((row) => Object.fromEntries([...row.cells].map((cell, i) => [names[i] ?? String(i), cellValue(cell)])));
 }
 
 /** Rows from anything: an array or iterable of objects, or of arrays (keyed "0", "1", …). */
@@ -36,13 +63,14 @@ export function normalize(rows) {
 
 /**
  * The rows a `data` attribute names: JSON (`[…]`), or a selector for a
- * `<table>` or a `<script type="application/json">`. Throws on bad JSON.
+ * `<table>` or a `<script type="application/json">`. `shape` is passed to
+ * readTable for a grid table. Throws on bad JSON.
  */
-export function resolve(spec, root = document) {
+export function resolve(spec, root = document, shape = {}) {
   const text = spec.trim();
   if (text.startsWith("[")) return { rows: normalize(JSON.parse(text)), source: null };
   const source = root.querySelector(text);
   if (!source) return { rows: [], source: null };
-  if (source instanceof HTMLTableElement) return { rows: readTable(source), source };
+  if (source instanceof HTMLTableElement) return { rows: readTable(source, shape), source };
   return { rows: normalize(JSON.parse(source.textContent)), source };
 }
