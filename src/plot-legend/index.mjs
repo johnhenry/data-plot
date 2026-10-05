@@ -11,10 +11,13 @@ const ATTRIBUTES = { label: "string" };
  * @summary A key to the plot's colors.
  *
  * @attr {string} label - A title for the legend.
+ *
+ * @prop {string} label
  */
 export default class PlotLegend extends PlotLayer {
   static observedAttributes = Object.keys(ATTRIBUTES);
 
+  /** @protected */
   draw(context) {
     super.draw(context);
     const scale = context.scales.color;

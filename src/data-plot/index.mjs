@@ -16,6 +16,8 @@ const ATTRIBUTES = {
   "value-field": "string",
 };
 
+const OBSERVED = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+
 /**
  * A plot's frame: holds the data, works out one scale per channel from
  * what its layers ask for (across every layer's rows), and has every layer
@@ -32,6 +34,14 @@ const ATTRIBUTES = {
  * @attr {string} column-field - With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field.
  * @attr {string} value-field - With `column-field`: the field each cell's value becomes.
  *
+ * @prop {string} src
+ * @prop {string} xDomain
+ * @prop {string} yDomain
+ * @prop {number} xPadding
+ * @prop {number} yPadding
+ * @prop {string} columnField
+ * @prop {string} valueField
+ *
  * @fires render - After every draw.
  * @fires error - The data couldn't be read (bad JSON, or an unsupported `src`). An `ErrorEvent`; the previous data stays plotted.
  *
@@ -39,8 +49,10 @@ const ATTRIBUTES = {
  * @cssprop --plot-height - Default height. Default `300px`.
  */
 export default class DataPlot extends HTMLElement {
-  static observedAttributes = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+  // The ARIA labels are watched too, to keep role="img" current.
+  static observedAttributes = OBSERVED;
 
+  /** @private */
   [FRAME] = true;
 
   #binding = new DataBinding(this, () => this.requestRender());

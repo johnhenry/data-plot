@@ -5,6 +5,8 @@ const ATTRIBUTES = { x: "string", y: "string", color: "string", src: "string", "
 
 const SVG = "http://www.w3.org/2000/svg";
 
+const OBSERVED = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+
 /**
  * A line through the rows, in x order: one line per value of `color`, if
  * given. Drawn as SVG stretched over the plotting area, with strokes that
@@ -20,17 +22,30 @@ const SVG = "http://www.w3.org/2000/svg";
  * @attr {string} column-field - Reads a grid table, as on `<data-plot>`.
  * @attr {string} value-field - See `column-field`.
  *
+ * @prop {string} x
+ * @prop {string} y
+ * @prop {string} color
+ * @prop {string} src
+ * @prop {string} columnField
+ * @prop {string} valueField
+ *
+ * @fires render - After it draws, when alone (inside a plot, the plot fires it).
+ * @fires error - Its own data couldn't be read.
+ *
  * @cssprop --color - A series' color, set on its `<path>`. Default `currentColor`.
  */
 export default class PlotLine extends DataLayer {
-  static observedAttributes = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+  // The ARIA labels are watched too, to keep role="img" current.
+  static observedAttributes = OBSERVED;
 
   #svg = null;
 
+  /** @protected */
   channels() {
     return ["x", "y", "color"].filter((channel) => this.hasAttribute(channel));
   }
 
+  /** @protected */
   draw(context) {
     super.draw(context);
     const { rows, scales } = context;

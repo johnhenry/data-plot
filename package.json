@@ -2,23 +2,29 @@
   "name": "@johnhenry/data-plot",
   "version": "0.0.0",
   "description": "Plots written as HTML: data from a <table> or <datalist>, marks from a <template>, placed with CSS. Custom elements shipped as source, no build step, no dependencies.",
-  "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/global.mjs",
+    ".": "./src/index.mjs",
+    "./global.mjs": "./src/global.mjs",
     "./package.json": "./package.json",
-    "./index.css": "./src/index.css",
+    "./custom-elements.json": "./custom-elements.json",
+    "./vscode.html-custom-data.json": "./vscode.html-custom-data.json",
     "./*.mjs": "./src/*.mjs",
     "./*.css": "./src/*.css",
     "./*": "./src/*/index.mjs"
   },
   "files": [
-    "src/"
+    "src/",
+    "custom-elements.json",
+    "vscode.html-custom-data.json"
   ],
+  "customElements": "custom-elements.json",
   "scripts": {
-    "serve": "node scripts/serve.mjs",
-    "test": "node --test test/*.test.mjs",
-    "test:browser": "playwright test"
+    "test": "npm run check && node --test test/*.test.mjs",
+    "check": "node scripts/check-syntax.mjs && node scripts/check-links.mjs && eslint . && tsc -p test/types",
+    "test:browser": "playwright test",
+    "manifest": "cem analyze && node scripts/manifest-outputs.mjs && node scripts/types.mjs",
+    "serve": "node scripts/serve.mjs"
   },
   "keywords": [
     "charts",
@@ -37,12 +43,17 @@
     "type": "git",
     "url": "git+https://github.com/johnhenry/data-plot.git"
   },
-  "homepage": "https://github.com/johnhenry/data-plot#readme",
+  "homepage": "https://opensource.johnhenry.me/data-plot/",
   "bugs": "https://github.com/johnhenry/data-plot/issues",
   "engines": {
     "node": ">=26.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0"
+    "@axe-core/playwright": "^4.13.0",
+    "@custom-elements-manifest/analyzer": "^0.11.0",
+    "@playwright/test": "^1.63.0",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "typescript": "^7.0.2"
   }
 }

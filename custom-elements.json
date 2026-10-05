@@ -1,0 +1,1907 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/chernoff-face/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "chernoff-face",
+          "declaration": {
+            "name": "ChernoffFace",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/chernoff-face/index.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "FEATURES",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ \"face-width\": \"narrow → wide face\", \"eye-size\": \"small → large eyes\", \"eye-spacing\": \"close → far-apart eyes\", \"pupil-size\": \"small → large pupils\", gaze: \"looking left → right\", \"brow-slant\": \"angry → worried brows\", \"nose-length\": \"short → long nose\", \"mouth-width\": \"narrow → wide mouth\", smile: \"frown → smile\", \"mouth-open\": \"closed → open mouth\", }",
+          "description": "The features, in attribute form, with what 0 and 1 mean."
+        },
+        {
+          "kind": "class",
+          "description": "A Chernoff face: each facial feature is a number from 0 to 1 (0.5 is\nneutral), drawn as an SVG in the light DOM.",
+          "name": "ChernoffFace",
+          "cssProperties": [
+            {
+              "description": "Fill of the face (index.css).",
+              "name": "--chernoff-face-fill"
+            },
+            {
+              "description": "Line color (index.css; defaults to currentColor).",
+              "name": "--chernoff-face-stroke"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#svg",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#parts",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#generatedLabel",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "features",
+              "description": "Every feature's current value (0–1), keyed in camelCase\n(`{ eyeSize: 0.5, smile: 0.9, … }`). Setting it writes the matching\nattributes; keys you leave out are unchanged.",
+              "type": {
+                "text": "Record<string, number>"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#value",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#build",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#draw",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "values"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 narrow … 1 wide. Default 0.5, like every feature.",
+              "name": "face-width"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 small … 1 large eyes.",
+              "name": "eye-size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 close … 1 far-apart eyes.",
+              "name": "eye-spacing"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 small … 1 large pupils.",
+              "name": "pupil-size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 looking left … 1 looking right.",
+              "name": "gaze"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 angry … 1 worried brows.",
+              "name": "brow-slant"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 short … 1 long nose.",
+              "name": "nose-length"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 narrow … 1 wide mouth.",
+              "name": "mouth-width"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 frown … 1 smile.",
+              "name": "smile"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 closed … 1 open mouth.",
+              "name": "mouth-open"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "chernoff-face",
+          "customElement": true,
+          "summary": "A face whose features show data: each is a number from 0 to 1."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "FEATURES",
+          "declaration": {
+            "name": "FEATURES",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ChernoffFace",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/data-plot/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "data-plot",
+          "declaration": {
+            "name": "DataPlot",
+            "module": "src/data-plot/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/data-plot/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A plot's frame: holds the data, works out one scale per channel from\nwhat its layers ask for (across every layer's rows), and has every layer\ndraw on those scales.",
+          "name": "DataPlot",
+          "cssProperties": [
+            {
+              "description": "Space around the plotting area for axes, like `inset`. Default `16px 16px 32px 48px`.",
+              "name": "--plot-margin"
+            },
+            {
+              "description": "Default height. Default `300px`.",
+              "name": "--plot-height"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "[FRAME]",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#binding",
+              "privacy": "private",
+              "default": "new DataBinding(this, () => this.requestRender())"
+            },
+            {
+              "kind": "field",
+              "name": "#children",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "scales",
+              "type": {
+                "text": "Record<string, Function>"
+              },
+              "default": "{}",
+              "description": "The scales from the last draw, by channel (`x`, `y`, `color`, `size`)."
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "The plot's rows: from `src`, a source inside it, or set here. Setting it (any iterable of objects or arrays) replots, until `src` changes or it's set to null. Changing the array in place needs `requestRender()`.",
+              "type": {
+                "text": "object[]"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws on the next microtask; several requests in one task draw once."
+            },
+            {
+              "kind": "method",
+              "name": "render",
+              "description": "Draws every layer now, then fires `render`."
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "src",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "xDomain",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "yDomain",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "name": "xPadding",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "name": "yPadding",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "columnField",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "valueField",
+              "kind": "field"
+            }
+          ],
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "After every draw."
+            },
+            {
+              "description": "The data couldn't be read (bad JSON, or an unsupported `src`). An `ErrorEvent`; the previous data stays plotted.",
+              "name": "error"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`#id` of a `<table>`, `<datalist>`, or `<script type=\"application/json\">` in the page. Default: one inside the plot.",
+              "name": "src"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The x scale's ends, like `0 100` (`auto` keeps one end automatic). Numbers only.",
+              "name": "x-domain"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The y scale's ends, like `0 auto`.",
+              "name": "y-domain"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "On a banded x scale, the share of each band left empty, 0–1. Default 0.2.",
+              "name": "x-padding"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The same for a banded y scale.",
+              "name": "y-padding"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field.",
+              "name": "column-field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "With `column-field`: the field each cell's value becomes.",
+              "name": "value-field"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "data-plot",
+          "customElement": true,
+          "summary": "A plot's frame: data, scales, and the layers drawn in it."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "DataPlot",
+            "module": "src/data-plot/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DataPlot",
+          "declaration": {
+            "name": "default",
+            "module": "./data-plot/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotMarks",
+          "declaration": {
+            "name": "default",
+            "module": "./plot-marks/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotLine",
+          "declaration": {
+            "name": "default",
+            "module": "./plot-line/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotAxis",
+          "declaration": {
+            "name": "default",
+            "module": "./plot-axis/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotLegend",
+          "declaration": {
+            "name": "default",
+            "module": "./plot-legend/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ChernoffFace",
+          "declaration": {
+            "name": "default",
+            "module": "./chernoff-face/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotLayer",
+          "declaration": {
+            "name": "PlotLayer",
+            "module": "./layer.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DataLayer",
+          "declaration": {
+            "name": "DataLayer",
+            "module": "./layer.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "linear",
+          "declaration": {
+            "name": "linear",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "band",
+          "declaration": {
+            "name": "band",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "position",
+          "declaration": {
+            "name": "position",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "color",
+          "declaration": {
+            "name": "color",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "nice",
+          "declaration": {
+            "name": "nice",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ticks",
+          "declaration": {
+            "name": "ticks",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "extent",
+          "declaration": {
+            "name": "extent",
+            "module": "./scale.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "readTable",
+          "declaration": {
+            "name": "readTable",
+            "module": "./data.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "readDatalist",
+          "declaration": {
+            "name": "readDatalist",
+            "module": "./data.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "readSource",
+          "declaration": {
+            "name": "readSource",
+            "module": "./data.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/layer.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "FRAME",
+          "description": "Marks the frame element (<data-plot>, under whatever tag name)."
+        },
+        {
+          "kind": "function",
+          "name": "describe",
+          "parameters": [
+            {
+              "name": "host"
+            },
+            {
+              "name": "readable"
+            },
+            {
+              "name": "{ hide = false, hasRows = true }",
+              "default": "{}"
+            }
+          ],
+          "description": "Makes a drawing accessible, following its data. A readable table already\nsays what the drawing shows, so the drawing is hidden from assistive\ntechnology. Otherwise the drawing must say it: given an `aria-label` (or\n`aria-labelledby`) it becomes `role=\"img\"`; without one, a console warning."
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PlotLayer",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected"
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once."
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Draws outside a plot. Layers that can't (axes, legends) draw nothing.",
+              "privacy": "protected"
+            },
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "{ describedByTable }"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "DataLayer",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#binding",
+              "privacy": "private",
+              "default": "new DataBinding(this, () => this.requestRender())"
+            },
+            {
+              "kind": "field",
+              "name": "#children",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "The rows drawn: its own (from `src`, a source inside it, or set here), else its plot's. Setting it replots, until `src` changes or it's set to null. Changing the array in place needs `requestRender()`.",
+              "type": {
+                "text": "object[]"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ownRows",
+              "description": "Its own rows, or null when it uses its plot's.",
+              "type": {
+                "text": "object[] | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "readable",
+              "description": "True when its own data is a table assistive technology can read.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Alone, there are no positions, but color and `:attr` scaling still apply; then it describes itself and fires `render`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once.",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "{ describedByTable }"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "PlotLayer",
+            "module": "src/layer.mjs"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "FRAME",
+          "declaration": {
+            "name": "FRAME",
+            "module": "src/layer.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "describe",
+          "declaration": {
+            "name": "describe",
+            "module": "src/layer.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PlotLayer",
+          "declaration": {
+            "name": "PlotLayer",
+            "module": "src/layer.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DataLayer",
+          "declaration": {
+            "name": "DataLayer",
+            "module": "src/layer.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-axis/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "plot-axis",
+          "declaration": {
+            "name": "PlotAxis",
+            "module": "src/plot-axis/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-axis/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An axis for the plot's `x` or `y` scale: tick labels in the margin, and\noptionally gridlines across the plotting area. Plain spans, styled with\nCSS.",
+          "name": "PlotAxis",
+          "members": [
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "context"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "scale",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "name": "ticks",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "label",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "name": "grid",
+              "kind": "field"
+            },
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once.",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Draws outside a plot. Layers that can't (axes, legends) draw nothing.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "\"x\" | \"y\""
+              },
+              "description": "Which scale. Default `x`.",
+              "name": "scale"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "About how many ticks, on a numeric scale. Default (0): 6 for x, 5 for y.",
+              "name": "ticks"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "A title for the axis.",
+              "name": "label"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Draw gridlines at the ticks.",
+              "name": "grid"
+            }
+          ],
+          "superclass": {
+            "name": "PlotLayer",
+            "module": "/src/layer.mjs"
+          },
+          "tagName": "plot-axis",
+          "customElement": true,
+          "summary": "Tick labels and gridlines for one of the plot's scales."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PlotAxis",
+            "module": "src/plot-axis/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-legend/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "plot-legend",
+          "declaration": {
+            "name": "PlotLegend",
+            "module": "src/plot-legend/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-legend/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A key to the plot's colors: a swatch per category, or a gradient with\nits ends for numbers. Empty when nothing is colored.",
+          "name": "PlotLegend",
+          "members": [
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "context"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "label",
+              "kind": "field"
+            },
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once.",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Draws outside a plot. Layers that can't (axes, legends) draw nothing.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "A title for the legend.",
+              "name": "label"
+            }
+          ],
+          "superclass": {
+            "name": "PlotLayer",
+            "module": "/src/layer.mjs"
+          },
+          "tagName": "plot-legend",
+          "customElement": true,
+          "summary": "A key to the plot's colors."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PlotLegend",
+            "module": "src/plot-legend/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-line/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "plot-line",
+          "declaration": {
+            "name": "PlotLine",
+            "module": "src/plot-line/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-line/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A line through the rows, in x order: one line per value of `color`, if\ngiven. Drawn as SVG stretched over the plotting area, with strokes that\nkeep their width. It needs a plot's scales, so alone it draws nothing.",
+          "name": "PlotLine",
+          "cssProperties": [
+            {
+              "description": "A series' color, set on its `<path>`. Default `currentColor`.",
+              "name": "--color"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#svg",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "context"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "x",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "y",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "color",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "src",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "columnField",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "valueField",
+              "kind": "field"
+            },
+            {
+              "kind": "field",
+              "name": "#binding",
+              "privacy": "private",
+              "default": "new DataBinding(this, () => this.requestRender())",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#children",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "The rows drawn: its own (from `src`, a source inside it, or set here), else its plot's. Setting it replots, until `src` changes or it's set to null. Changing the array in place needs `requestRender()`.",
+              "type": {
+                "text": "object[]"
+              },
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ownRows",
+              "description": "Its own rows, or null when it uses its plot's.",
+              "type": {
+                "text": "object[] | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "readable",
+              "description": "True when its own data is a table assistive technology can read.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Alone, there are no positions, but color and `:attr` scaling still apply; then it describes itself and fires `render`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once.",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "After it draws, when alone (inside a plot, the plot fires it).",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "description": "Its own data couldn't be read.",
+              "name": "error"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for horizontal position.",
+              "name": "x"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for vertical position.",
+              "name": "y"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field that splits the rows into series, each its own color.",
+              "name": "color"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`#id` of a `<table>`, `<datalist>`, or JSON `<script>` with this layer's own rows. Default: one inside it, else its plot's rows.",
+              "name": "src"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Reads a grid table, as on `<data-plot>`.",
+              "name": "column-field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "See `column-field`.",
+              "name": "value-field"
+            }
+          ],
+          "superclass": {
+            "name": "DataLayer",
+            "module": "/src/layer.mjs"
+          },
+          "tagName": "plot-line",
+          "customElement": true,
+          "summary": "A line through the rows, one per series."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PlotLine",
+            "module": "src/plot-line/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-marks/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "plot-marks",
+          "declaration": {
+            "name": "PlotMarks",
+            "module": "src/plot-marks/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/plot-marks/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "One element per row: a copy of the `<template>` inside (or what `mark`\nbuilds, or a dot), given its position and color as CSS custom\nproperties, so ordinary CSS places and styles it. Rows keep their element\nbetween draws (by `key`, else by position), so changes can animate.\n\nInside a `<data-plot>` it draws on the plot's scales, with the plot's\nrows unless it has its own. Alone, it has no positions (only `color`\napplies): a grid of glyphs, laid out by your CSS.",
+          "name": "PlotMarks",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#marks",
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "field",
+              "name": "#builder",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "channels",
+              "description": "The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "mark",
+              "description": "Builds marks from script instead of a `<template>`: called as\n`mark(row, previous)` for each row, with the element that row had last\ntime (or undefined); returns its element (the same one, to update it in\nplace). Positions and colors are set on whatever it returns. Null goes\nback to the template.",
+              "type": {
+                "text": "((row: object, previous?: Element) => Element) | null"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "draw",
+              "parameters": [
+                {
+                  "name": "{ rows, scales, unit, describedByTable }"
+                }
+              ],
+              "description": "Draws from the plot's `{ rows, scales, unit, describedByTable }`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#place",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "mark"
+                },
+                {
+                  "name": "row"
+                },
+                {
+                  "name": "fields"
+                },
+                {
+                  "name": "scales"
+                },
+                {
+                  "name": "repeat"
+                }
+              ]
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "x",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "x2",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "y",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "y2",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "color",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "size",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "key",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "repeat",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "src",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "columnField",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "valueField",
+              "kind": "field"
+            },
+            {
+              "kind": "field",
+              "name": "#binding",
+              "privacy": "private",
+              "default": "new DataBinding(this, () => this.requestRender())",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#children",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "The rows drawn: its own (from `src`, a source inside it, or set here), else its plot's. Setting it replots, until `src` changes or it's set to null. Changing the array in place needs `requestRender()`.",
+              "type": {
+                "text": "object[]"
+              },
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ownRows",
+              "description": "Its own rows, or null when it uses its plot's.",
+              "type": {
+                "text": "object[] | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "readable",
+              "description": "True when its own data is a table assistive technology can read.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderAlone",
+              "description": "Alone, there are no positions, but color and `:attr` scaling still apply; then it describes itself and fires `render`.",
+              "privacy": "protected",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#plot",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "plot",
+              "description": "The `<data-plot>` this layer is directly inside, or null.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "requestRender",
+              "description": "Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once.",
+              "inheritedFrom": {
+                "name": "PlotLayer",
+                "module": "src/layer.mjs"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "render",
+              "type": {
+                "text": "Event"
+              },
+              "description": "After it draws, when alone (inside a plot, the plot fires it).",
+              "inheritedFrom": {
+                "name": "DataLayer",
+                "module": "src/layer.mjs"
+              }
+            },
+            {
+              "description": "Its own data couldn't be read.",
+              "name": "error"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for horizontal position. Sets `--x` (0 left … 1 right) and, on a banded scale, `--bandwidth`.",
+              "name": "x"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for vertical position. Sets `--y` (0 bottom … 1 top) and `--bandheight`.",
+              "name": "y"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for the other end of a horizontal range, on x's scale. Sets `--x2`, and `--x-start`/`--x-length` (the range's left end and width), which the default CSS uses to stretch the mark.",
+              "name": "x2"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for the other end of a vertical range. Sets `--y2`, `--y-start`, and `--y-length`.",
+              "name": "y2"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for color. Sets `--color`.",
+              "name": "color"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field for size. Sets `--size` (0 … 1).",
+              "name": "size"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field that identifies a row across updates. Default: its position.",
+              "name": "key"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Field with a count: the row is stamped that many times (a unit or waffle chart). Each copy gets `--index` and `--count`.",
+              "name": "repeat"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`#id` of a `<table>`, `<datalist>`, or JSON `<script>` with this layer's own rows. Default: one inside it, else its plot's rows.",
+              "name": "src"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Reads a grid table, as on `<data-plot>`.",
+              "name": "column-field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "See `column-field`.",
+              "name": "value-field"
+            }
+          ],
+          "superclass": {
+            "name": "DataLayer",
+            "module": "/src/layer.mjs"
+          },
+          "tagName": "plot-marks",
+          "customElement": true,
+          "summary": "One element per row, from a template, placed with CSS custom properties."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PlotMarks",
+            "module": "src/plot-marks/index.mjs"
+          }
+        }
+      ]
+    }
+  ]
+}

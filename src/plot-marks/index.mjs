@@ -18,6 +18,8 @@ const ATTRIBUTES = {
   "value-field": "string",
 };
 
+const OBSERVED = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+
 /**
  * One element per row: a copy of the `<template>` inside (or what `mark`
  * builds, or a dot), given its position and color as CSS custom
@@ -43,15 +45,29 @@ const ATTRIBUTES = {
  * @attr {string} column-field - Reads a grid table, as on `<data-plot>`.
  * @attr {string} value-field - See `column-field`.
  *
+ * @prop {string} x
+ * @prop {string} x2
+ * @prop {string} y
+ * @prop {string} y2
+ * @prop {string} color
+ * @prop {string} size
+ * @prop {string} key
+ * @prop {string} repeat
+ * @prop {string} src
+ * @prop {string} columnField
+ * @prop {string} valueField
+ *
  * @fires render - After it draws, when alone (inside a plot, the plot fires it).
  * @fires error - Its own data couldn't be read.
  */
 export default class PlotMarks extends DataLayer {
-  static observedAttributes = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
+  // The ARIA labels are watched too, to keep role="img" current.
+  static observedAttributes = OBSERVED;
 
   #marks = new Map();
   #builder = null;
 
+  /** @protected */
   channels() {
     return CHANNELS.filter((channel) => this.hasAttribute(channel));
   }
@@ -74,6 +90,7 @@ export default class PlotMarks extends DataLayer {
     this.requestRender();
   }
 
+  /** @protected */
   draw({ rows, scales, unit, describedByTable }) {
     super.draw({ describedByTable });
     const template = this.querySelector(":scope > template");

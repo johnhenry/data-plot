@@ -17,10 +17,16 @@ const format = (value) => (typeof value === "number" ? value.toLocaleString() : 
  * @attr {number} ticks - About how many ticks, on a numeric scale. Default (0): 6 for x, 5 for y.
  * @attr {string} label - A title for the axis.
  * @attr {boolean} grid - Draw gridlines at the ticks.
+ *
+ * @prop {string} scale
+ * @prop {number} ticks
+ * @prop {string} label
+ * @prop {boolean} grid
  */
 export default class PlotAxis extends PlotLayer {
   static observedAttributes = Object.keys(ATTRIBUTES);
 
+  /** @protected */
   draw(context) {
     super.draw(context);
     const which = this.getAttribute("scale") === "y" ? "y" : "x";

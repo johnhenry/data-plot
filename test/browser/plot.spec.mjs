@@ -331,3 +331,27 @@ test("no readable table and no label: a console warning", async ({ page }) => {
   await expect.poll(() => warnings.length).toBe(1);
   expect(warnings[0]).toContain("aria-label");
 });
+
+test("a new layer, written as the README shows, draws on the plot's scales", async ({ page }) => {
+  await mount(page, `<style>plot-rule > span { position: absolute; inset-inline: 0; bottom: calc(var(--y) * 100%); border-block-start: 2px dashed; }</style>
+    <data-plot y-domain="0 auto">${TABLE}<plot-marks x="a" y="b"></plot-marks><plot-rule value="10"></plot-rule></data-plot>`);
+  const result = await page.evaluate(async () => {
+    const { PlotLayer } = await import("/src/index.mjs");
+    class PlotRule extends PlotLayer {
+      static observedAttributes = ["value"];
+      draw(context) {
+        super.draw(context);
+        const y = context.scales.y?.(Number(this.getAttribute("value")));
+        if (Number.isFinite(y)) this.style.setProperty("--y", String(y));
+        if (!this.firstElementChild) this.append(document.createElement("span"));
+      }
+    }
+    customElements.define("plot-rule", PlotRule);
+    await new Promise((r) => setTimeout(r, 0));
+    const rule = document.querySelector("plot-rule");
+    const plot = document.querySelector("data-plot").getBoundingClientRect();
+    return { y: rule.style.getPropertyValue("--y"), bottom: Math.round(plot.bottom - rule.firstElementChild.getBoundingClientRect().bottom), hidden: rule.hasAttribute("aria-hidden") };
+  });
+  // 10 of 0…20, so halfway up a 200px plot; hidden like the other layers, since the table describes the data.
+  expect(result).toEqual({ y: "0.5", bottom: 100, hidden: true });
+});
