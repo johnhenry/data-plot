@@ -42,7 +42,10 @@ export class PlotLayer extends HTMLElement {
   #plot = null;
   #pending = false;
 
-  /** The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them. */
+  /**
+   * The channels this layer reads (`x`, `x2`, `y`, `y2`, `color`, `size`), so the plot builds scales for them.
+   * @protected
+   */
   channels() {
     return [];
   }
@@ -79,10 +82,16 @@ export class PlotLayer extends HTMLElement {
     });
   }
 
-  /** Draws outside a plot. Layers that can't (axes, legends) draw nothing. */
+  /**
+   * Draws outside a plot. Layers that can't (axes, legends) draw nothing.
+   * @protected
+   */
   renderAlone() {}
 
-  /** Draws from the plot's `{ rows, scales, unit, describedByTable }`. */
+  /**
+   * Draws from the plot's `{ rows, scales, unit, describedByTable }`.
+   * @protected
+   */
   draw({ describedByTable }) {
     // With a readable table, the drawing only repeats it.
     this.toggleAttribute("aria-hidden", describedByTable);
@@ -102,12 +111,12 @@ export class DataLayer extends PlotLayer {
     this.requestRender();
   }
 
-  /** Its own rows, or null when it uses its plot's. */
+  /** Its own rows, or null when it uses its plot's. @type {object[] | null} */
   get ownRows() {
     return this.#binding.rows;
   }
 
-  /** True when its own data is a table assistive technology can read. */
+  /** True when its own data is a table assistive technology can read. @type {boolean} */
   get readable() {
     return this.#binding.readable;
   }
@@ -137,7 +146,10 @@ export class DataLayer extends PlotLayer {
     super.attributeChangedCallback(name, previous, value);
   }
 
-  /** Alone, there are no positions, but color and `:attr` scaling still apply; then it describes itself and fires `render`. */
+  /**
+   * Alone, there are no positions, but color and `:attr` scaling still apply; then it describes itself and fires `render`.
+   * @protected
+   */
   renderAlone() {
     const rows = this.data;
     const field = this.getAttribute("color");

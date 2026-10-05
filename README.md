@@ -1,12 +1,17 @@
 # data-plot
 
-Plots written as HTML, for pages with no build step: the data is a
-`<table>` or `<datalist>` you'd write anyway, the marks are elements you
-design, and CSS places them. Custom elements, no dependencies.
+[![npm version](https://img.shields.io/npm/v/%40johnhenry%2Fdata-plot.svg)](https://www.npmjs.com/package/@johnhenry/data-plot)
+[![CI](https://github.com/johnhenry/data-plot/actions/workflows/ci.yml/badge.svg)](https://github.com/johnhenry/data-plot/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/%40johnhenry%2Fdata-plot.svg)](LICENSE)
+
+Full documentation: [opensource.johnhenry.me/data-plot](https://opensource.johnhenry.me/data-plot/)
+
+Plots written as HTML. The data is a `<table>` or `<datalist>` you'd write
+anyway, the marks are elements you design, and CSS places them:
 
 ```html
-<link rel="stylesheet" href="src/index.css" />
-<script type="module" src="src/global.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnhenry/data-plot/src/global.mjs"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@johnhenry/data-plot/src/index.css" />
 
 <data-plot>
   <table>
@@ -21,6 +26,64 @@ design, and CSS places them. Custom elements, no dependencies.
   <plot-marks x="rain" y="sun"></plot-marks>
 </data-plot>
 ```
+
+Before the script loads, or for a screen reader after it does, the table
+is the table. Edit it and the plot follows. Custom elements, shipped as
+source: no build step, no dependencies.
+
+## Contents
+
+- [Install](#install)
+- [Elements](#elements)
+- [The idea](#the-idea)
+- [Data](#data)
+- [HTML or script, the same API](#html-or-script-the-same-api)
+- [Accessibility](#accessibility)
+- [Styling](#styling)
+- [Adding a new layer](#adding-a-new-layer)
+- [Not yet](#not-yet)
+- [Family](#family)
+- [License](#license)
+
+## Install
+
+No install is needed: load it from a CDN, as above. `global.mjs` registers
+every element; each element also has its own
+(`@johnhenry/data-plot/plot-marks/global.mjs`). With npm:
+
+```bash
+npm install @johnhenry/data-plot
+```
+
+```js
+import "@johnhenry/data-plot/global.mjs"; // registers every element
+import { DataPlot, PlotMarks, linear, band } from "@johnhenry/data-plot"; // or the classes and scales
+```
+
+It ships TypeScript declarations, a `custom-elements.json` manifest, and
+VS Code autocomplete data (`vscode.html-custom-data.json`).
+
+**Provenance.** `<chernoff-face>` and the scatter plot that `<data-plot>`
+grew from were developed in
+[`@johnhenry/domkit`](https://github.com/johnhenry/domkit) (and before that
+`johnhenry/lib`, as `xy-grapher` and an experimental `chernoff-face`), and
+moved here with their history. Earlier forms of both shipped in domkit
+0.0.0 through 0.0.4; `0.0.0` is data-plot's first version.
+
+## Elements
+
+| Element | What it's for |
+|---|---|
+| [`<data-plot>`](src/data-plot/readme.md) | The frame: data, one scale per channel, and the layers drawn in it |
+| [`<plot-marks>`](src/plot-marks/readme.md) | One element per row, from a template, placed with CSS custom properties |
+| [`<plot-line>`](src/plot-line/readme.md) | A line through the rows, one per series |
+| [`<plot-axis>`](src/plot-axis/readme.md) | Tick labels and gridlines for one of the plot's scales |
+| [`<plot-legend>`](src/plot-legend/readme.md) | A key to the plot's colors |
+| [`<chernoff-face>`](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 |
+
+Every attribute, property, event, and CSS property:
+[docs/reference.md](docs/reference.md). A live gallery, with each example's
+source beside it: `npm run serve`, then `/demo/`.
 
 ## The idea
 
@@ -103,26 +166,73 @@ and it's left alone.
 Everything is in the light DOM, and every default rule is wrapped in
 `:where()`, so any page CSS overrides it.
 
+## Adding a new layer
+
+A layer is a custom element inside `<data-plot>` that draws from the
+plot's rows and scales. Extend `PlotLayer` (draws only inside a plot) or
+`DataLayer` (can also bring its own rows and draw alone), both exported:
+
+```js
+import { PlotLayer } from "@johnhenry/data-plot";
+
+// <plot-rule value="2000">: a horizontal reference line at a y value.
+class PlotRule extends PlotLayer {
+  static observedAttributes = ["value"];
+  // Called by the plot with { rows, scales, unit, describedByTable }.
+  draw(context) {
+    super.draw(context); // keeps aria-hidden in step with the data
+    const y = context.scales.y?.(Number(this.getAttribute("value")));
+    if (Number.isFinite(y)) this.style.setProperty("--y", String(y));
+    if (!this.firstElementChild) this.append(document.createElement("span"));
+  }
+}
+customElements.define("plot-rule", PlotRule);
+```
+
+```css
+/* The layer fills the plotting area; the line sits at --y within it. */
+plot-rule > span { position: absolute; inset-inline: 0; bottom: calc(var(--y) * 100%); border-block-start: 2px dashed; }
+```
+
+
+- A layer that maps fields lists them in `channels()` (`x`, `x2`, `y`,
+  `y2`, `color`, `size`), so the plot's scales cover its rows too; this
+  one only reads the y scale the other layers made.
+- Every child of the frame (except sources and the legend) fills the
+  plotting area, so a layer draws inside it. Draw by setting custom
+  properties and let CSS place things, as
+  `<plot-marks>` does; keep elements between draws so updates animate.
+- Call `requestRender()` when an attribute changes; the base classes do it
+  for `observedAttributes`.
+- Give it JSDoc (`@tag`, `@attr`, `@prop`, `@fires`), a `readme.md` with
+  the API markers, and tests in all three engines, then `npm run manifest`.
+
 ## Not yet
 
 Time and log scales, areas, stacking, transforms (histograms, box plots,
 density, trends), pies, facets, and layouts for trees, flows, networks,
 and maps: see [docs/roadmap.md](docs/roadmap.md).
 
-## Provenance
+## Family
 
-`<chernoff-face>` and the scatter plot that `<data-plot>` grew from were
-developed in [`@johnhenry/domkit`](https://github.com/johnhenry/domkit)
-(and before that `johnhenry/lib`, as `xy-grapher` and an experimental
-`chernoff-face`), and moved here with their history. domkit's
-`<scatter-plot>` is replaced by `<data-plot>` with `<plot-marks>`. Earlier
-forms of both (`chernoff-face` and `xy-grapher`) shipped in domkit 0.0.0
-through 0.0.4; data-plot itself hasn't been published yet.
+data-plot came out of [domkit](https://github.com/johnhenry/domkit) and
+meets its siblings in the page rather than importing them:
 
-## Working on it
+- **[domkit](https://github.com/johnhenry/domkit)**: where
+  `<scatter-plot>` and `<chernoff-face>` started. Its elements (tabs,
+  hot keys, `<frame-timer>`) sit beside plots; data-plot imports none of
+  them.
+- **[canvas-fx](https://github.com/johnhenry/canvas-fx)**: any element is
+  a mark, so a `<pixel-sprite>` can be one; and where HTML-in-canvas is
+  on (experimental, behind a flag), a plot inside `<pixel-canvas html>`
+  takes its effects.
+- **[htmlbuilder](https://github.com/johnhenry/htmlbuilder)**: loads
+  libraries from their `custom-elements.json`, so data-plot's elements,
+  attributes, and snippets come up there like any other library's.
+- **[math](https://github.com/johnhenry/math)**: planned. The statistical
+  transforms in the roadmap (density, regression) would load
+  `@johnhenry/math` only when used.
 
-```bash
-npm run serve        # http://localhost:4739/demo/
-npm test             # scales
-npm run test:browser # elements, in Chromium, Firefox, and WebKit
-```
+## License
+
+MIT

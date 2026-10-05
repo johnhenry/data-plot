@@ -19,7 +19,8 @@
   block-size: var(--plot-height, 300px);
   font-size: 12px;
 }
-:where(data-plot > :is(plot-marks, plot-line, plot-axis)) {
+/* Every layer, built in or your own, fills the plotting area. */
+:where(data-plot > :not(table, datalist, script, template, plot-legend)) {
   position: absolute;
   inset: var(--plot-margin, 16px 16px 32px 48px);
   pointer-events: none;

@@ -16,8 +16,14 @@ jobs:
     with:
       node-versions: '["26"]'
       os: '["ubuntu-latest"]'
-      # npm test: the scale unit tests. Then the browser suites in Chromium, Firefox, and WebKit.
+      # npm test: syntax, references, lint, types, and the scale unit tests.
+      # Then the browser suites in Chromium, Firefox, and WebKit.
       gate-commands: |
         npm test
         npx playwright install --with-deps chromium firefox webkit
         npm run test:browser
+      # custom-elements.json and everything generated from it must be
+      # committed up to date (`npm run manifest`).
+      drift-check: true
+      drift-build-command: npm run manifest
+      drift-path: custom-elements.json vscode.html-custom-data.json docs/reference.md src

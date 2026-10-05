@@ -1,0 +1,234 @@
+{
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "chernoff-face",
+      "description": "A face whose features show data: each is a number from 0 to 1.",
+      "attributes": [
+        {
+          "name": "face-width",
+          "description": "0 narrow … 1 wide. Default 0.5, like every feature."
+        },
+        {
+          "name": "eye-size",
+          "description": "0 small … 1 large eyes."
+        },
+        {
+          "name": "eye-spacing",
+          "description": "0 close … 1 far-apart eyes."
+        },
+        {
+          "name": "pupil-size",
+          "description": "0 small … 1 large pupils."
+        },
+        {
+          "name": "gaze",
+          "description": "0 looking left … 1 looking right."
+        },
+        {
+          "name": "brow-slant",
+          "description": "0 angry … 1 worried brows."
+        },
+        {
+          "name": "nose-length",
+          "description": "0 short … 1 long nose."
+        },
+        {
+          "name": "mouth-width",
+          "description": "0 narrow … 1 wide mouth."
+        },
+        {
+          "name": "smile",
+          "description": "0 frown … 1 smile."
+        },
+        {
+          "name": "mouth-open",
+          "description": "0 closed … 1 open mouth."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/chernoff-face"
+        }
+      ]
+    },
+    {
+      "name": "data-plot",
+      "description": "A plot's frame: data, scales, and the layers drawn in it.\n\nEvents: `render`, `error`",
+      "attributes": [
+        {
+          "name": "src",
+          "description": "`#id` of a `<table>`, `<datalist>`, or `<script type=\"application/json\">` in the page. Default: one inside the plot."
+        },
+        {
+          "name": "x-domain",
+          "description": "The x scale's ends, like `0 100` (`auto` keeps one end automatic). Numbers only."
+        },
+        {
+          "name": "y-domain",
+          "description": "The y scale's ends, like `0 auto`."
+        },
+        {
+          "name": "x-padding",
+          "description": "On a banded x scale, the share of each band left empty, 0–1. Default 0.2."
+        },
+        {
+          "name": "y-padding",
+          "description": "The same for a banded y scale."
+        },
+        {
+          "name": "column-field",
+          "description": "With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field."
+        },
+        {
+          "name": "value-field",
+          "description": "With `column-field`: the field each cell's value becomes."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/data-plot"
+        }
+      ]
+    },
+    {
+      "name": "plot-axis",
+      "description": "Tick labels and gridlines for one of the plot's scales.",
+      "attributes": [
+        {
+          "name": "scale",
+          "description": "Which scale. Default `x`."
+        },
+        {
+          "name": "ticks",
+          "description": "About how many ticks, on a numeric scale. Default (0): 6 for x, 5 for y."
+        },
+        {
+          "name": "label",
+          "description": "A title for the axis."
+        },
+        {
+          "name": "grid",
+          "description": "Draw gridlines at the ticks.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/plot-axis"
+        }
+      ]
+    },
+    {
+      "name": "plot-legend",
+      "description": "A key to the plot's colors.",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "A title for the legend."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/plot-legend"
+        }
+      ]
+    },
+    {
+      "name": "plot-line",
+      "description": "A line through the rows, one per series.\n\nEvents: `render`, `error`",
+      "attributes": [
+        {
+          "name": "x",
+          "description": "Field for horizontal position."
+        },
+        {
+          "name": "y",
+          "description": "Field for vertical position."
+        },
+        {
+          "name": "color",
+          "description": "Field that splits the rows into series, each its own color."
+        },
+        {
+          "name": "src",
+          "description": "`#id` of a `<table>`, `<datalist>`, or JSON `<script>` with this layer's own rows. Default: one inside it, else its plot's rows."
+        },
+        {
+          "name": "column-field",
+          "description": "Reads a grid table, as on `<data-plot>`."
+        },
+        {
+          "name": "value-field",
+          "description": "See `column-field`."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/plot-line"
+        }
+      ]
+    },
+    {
+      "name": "plot-marks",
+      "description": "One element per row, from a template, placed with CSS custom properties.\n\nEvents: `render`, `error`",
+      "attributes": [
+        {
+          "name": "x",
+          "description": "Field for horizontal position. Sets `--x` (0 left … 1 right) and, on a banded scale, `--bandwidth`."
+        },
+        {
+          "name": "y",
+          "description": "Field for vertical position. Sets `--y` (0 bottom … 1 top) and `--bandheight`."
+        },
+        {
+          "name": "x2",
+          "description": "Field for the other end of a horizontal range, on x's scale. Sets `--x2`, and `--x-start`/`--x-length` (the range's left end and width), which the default CSS uses to stretch the mark."
+        },
+        {
+          "name": "y2",
+          "description": "Field for the other end of a vertical range. Sets `--y2`, `--y-start`, and `--y-length`."
+        },
+        {
+          "name": "color",
+          "description": "Field for color. Sets `--color`."
+        },
+        {
+          "name": "size",
+          "description": "Field for size. Sets `--size` (0 … 1)."
+        },
+        {
+          "name": "key",
+          "description": "Field that identifies a row across updates. Default: its position."
+        },
+        {
+          "name": "repeat",
+          "description": "Field with a count: the row is stamped that many times (a unit or waffle chart). Each copy gets `--index` and `--count`."
+        },
+        {
+          "name": "src",
+          "description": "`#id` of a `<table>`, `<datalist>`, or JSON `<script>` with this layer's own rows. Default: one inside it, else its plot's rows."
+        },
+        {
+          "name": "column-field",
+          "description": "Reads a grid table, as on `<data-plot>`."
+        },
+        {
+          "name": "value-field",
+          "description": "See `column-field`."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/data-plot/tree/main/src/plot-marks"
+        }
+      ]
+    }
+  ]
+}

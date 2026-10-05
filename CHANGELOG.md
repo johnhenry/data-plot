@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.0 — unreleased
+## 0.0.0 — first version (2026-10-04)
 
 The first version: plots written as HTML.
 

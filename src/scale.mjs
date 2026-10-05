@@ -1,9 +1,22 @@
 // Scales: data values to positions from 0 to 1 (and colors). Every scale is
 // a function with a few properties, so layers can ask it for ticks.
 
+/**
+ * A scale: a function from a data value to a position from 0 to 1 (or, for
+ * color, to a CSS color), with what it was built from.
+ * @template [T=number]
+ * @typedef {((value: unknown) => T) & { type: string, domain: unknown[], bandwidth?: number, ticks: (count?: number) => unknown[] }} Scale
+ */
+
+/** @param {unknown} value @returns {value is number} */
 const isNumber = (value) => typeof value === "number" && Number.isFinite(value);
 
-/** A "nice" tick step for a span divided into about `count` parts: 1, 2, or 5 × 10ⁿ. */
+/**
+ * A "nice" tick step for a span divided into about `count` parts: 1, 2, or 5 × 10ⁿ.
+ * @param {number} span
+ * @param {number} count
+ * @returns {number}
+ */
 export function tickStep(span, count) {
   const raw = span / Math.max(1, count);
   const power = 10 ** Math.floor(Math.log10(raw));
@@ -11,14 +24,24 @@ export function tickStep(span, count) {
   return power * (error >= 7.5 ? 10 : error >= 3.5 ? 5 : error >= 1.5 ? 2 : 1);
 }
 
-/** Widens [min, max] outward to whole tick steps. */
+/**
+ * Widens [min, max] outward to whole tick steps.
+ * @param {[number, number]} domain
+ * @param {number} [count]
+ * @returns {[number, number]}
+ */
 export function nice([min, max], count = 6) {
   if (min === max) return min === 0 ? [0, 1] : [Math.min(0, min), Math.max(0, max)];
   const step = tickStep(max - min, count);
   return [Math.floor(min / step) * step, Math.ceil(max / step) * step];
 }
 
-/** Evenly stepped values from min to max, at a nice step. */
+/**
+ * Evenly stepped values from min to max, at a nice step.
+ * @param {[number, number]} domain
+ * @param {number} [count]
+ * @returns {number[]}
+ */
 export function ticks([min, max], count = 6) {
   if (min === max) return [min];
   const step = tickStep(max - min, count);
@@ -31,7 +54,11 @@ export function ticks([min, max], count = 6) {
   return out;
 }
 
-/** Continuous numbers: domain [min, max] → 0…1. */
+/**
+ * Continuous numbers: domain [min, max] → 0…1. Non-numbers map to NaN.
+ * @param {[number, number]} domain
+ * @returns {Scale}
+ */
 export function linear(domain) {
   const [min, max] = domain;
   const scale = (value) => (!isNumber(value) ? NaN : max === min ? 0.5 : (value - min) / (max - min));
@@ -43,7 +70,12 @@ export function linear(domain) {
   });
 }
 
-/** Distinct values, each given an equal band; a value maps to its band's center. */
+/**
+ * Distinct values, each given an equal band; a value maps to its band's center.
+ * @param {Iterable<unknown>} values
+ * @param {number} [padding] The share of each band left empty, 0–1. Default 0.2.
+ * @returns {Scale}
+ */
 export function band(values, padding = 0.2) {
   const domain = [...new Set(values)];
   const step = 1 / Math.max(1, domain.length);
@@ -60,7 +92,12 @@ export function band(values, padding = 0.2) {
 // A categorical palette that stays legible on light and dark backgrounds.
 export const PALETTE = ["#4269d0", "#efb118", "#ff725c", "#6cc5b0", "#3ca951", "#ff8ab7", "#a463f2", "#97bbf5", "#9c6b4e", "#9498a0"];
 
-/** Categories → palette colors (in order of appearance), or numbers → a ramp between two colors. */
+/**
+ * Categories → palette colors (in order of appearance), or numbers → a ramp between two colors.
+ * @param {unknown[]} values
+ * @param {{ palette?: string[], low?: string, high?: string }} [options]
+ * @returns {Scale<string>}
+ */
 export function color(values, { palette = PALETTE, low = "#d7e5f5", high = "#1f4e99" } = {}) {
   if (values.length && values.every(isNumber)) {
     const position = linear(extent(values));
@@ -73,7 +110,11 @@ export function color(values, { palette = PALETTE, low = "#d7e5f5", high = "#1f4
   return Object.assign(scale, { type: "categorical", domain, ticks: () => domain });
 }
 
-/** [smallest, largest] of the finite numbers in `values`, or [0, 1] if there are none. */
+/**
+ * [smallest, largest] of the finite numbers in `values`, or [0, 1] if there are none.
+ * @param {Iterable<unknown>} values
+ * @returns {[number, number]}
+ */
 export function extent(values) {
   let min = Infinity;
   let max = -Infinity;
@@ -90,6 +131,10 @@ export function extent(values) {
  * otherwise. `spec` is the `x-domain`/`y-domain` attribute: "0 100", or
  * "0 auto" to pin one end, applied before rounding to nice ticks. `padding`
  * is a banded scale's empty share of each band.
+ * @param {unknown[]} values
+ * @param {string | null} [spec]
+ * @param {number} [padding]
+ * @returns {Scale}
  */
 export function position(values, spec, padding) {
   const present = values.filter((value) => value !== null && value !== undefined && value !== "");
@@ -108,6 +153,9 @@ export function position(values, spec, padding) {
  * already scales (in `fixed`, field → scale) uses that scale, so `:size`
  * and `size` agree; any other field spans its values across `rowSets`.
  * Results are clamped to 0–1.
+ * @param {Record<string, unknown>[][]} rowSets
+ * @param {Map<string, Scale>} [fixed]
+ * @returns {(field: string, value: unknown) => number}
  */
 export function unitScale(rowSets, fixed = new Map()) {
   const cache = new Map(fixed);
