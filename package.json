@@ -1,6 +1,6 @@
 {
   "name": "@johnhenry/data-plot",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Plots written as HTML: data from a <table> or <datalist>, marks from a <template>, placed with CSS. Custom elements shipped as source, no build step, no dependencies.",
   "type": "module",
   "exports": {

@@ -6,6 +6,8 @@
 //
 //   <chernoff-face smile="0.9" eye-size="0.7" aria-label="Q3: great"></chernoff-face>
 
+import { upgradeProperties } from "../upgrade.mjs";
+
 const SVG = "http://www.w3.org/2000/svg";
 
 /** The features, in attribute form, with what 0 and 1 mean. */
@@ -67,6 +69,8 @@ export default class ChernoffFace extends HTMLElement {
     const style = document.createElement("style");
     style.append(":host(:not([hidden])) { display: inline-block; inline-size: 4em; block-size: 4em; vertical-align: middle; }");
     shadow.append(style, document.createElement("slot"));
+    // Properties assigned before this element was defined.
+    upgradeProperties(this);
   }
 
   connectedCallback() {

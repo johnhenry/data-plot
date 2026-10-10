@@ -22,6 +22,7 @@
     "src/source.mjs",
     "src/template.mjs",
     "src/reflect.mjs",
-    "src/layer.mjs"
+    "src/layer.mjs",
+    "src/upgrade.mjs"
   ]
 }

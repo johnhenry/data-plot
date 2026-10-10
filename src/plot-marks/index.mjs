@@ -1,3 +1,4 @@
+import { upgradeProperties } from "../upgrade.mjs";
 import { DataLayer } from "../layer.mjs";
 import { stamp, bind } from "../template.mjs";
 import { reflect } from "../reflect.mjs";
@@ -66,6 +67,12 @@ export default class PlotMarks extends DataLayer {
 
   #marks = new Map();
   #builder = null;
+
+  constructor() {
+    super();
+    // Properties assigned before this element was defined.
+    upgradeProperties(this);
+  }
 
   /** @protected */
   channels() {

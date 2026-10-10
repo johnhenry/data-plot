@@ -1,3 +1,4 @@
+import { upgradeProperties } from "../upgrade.mjs";
 import { PlotLayer } from "../layer.mjs";
 import { reflect } from "../reflect.mjs";
 
@@ -16,6 +17,12 @@ const ATTRIBUTES = { label: "string" };
  */
 export default class PlotLegend extends PlotLayer {
   static observedAttributes = Object.keys(ATTRIBUTES);
+
+  constructor() {
+    super();
+    // Properties assigned before this element was defined.
+    upgradeProperties(this);
+  }
 
   /** @protected */
   draw(context) {

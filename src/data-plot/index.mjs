@@ -1,3 +1,4 @@
+import { upgradeProperties } from "../upgrade.mjs";
 import { DataBinding, sourceChildrenChanged } from "../source.mjs";
 import { FRAME, describe } from "../layer.mjs";
 import { reflect } from "../reflect.mjs";
@@ -61,6 +62,12 @@ export default class DataPlot extends HTMLElement {
 
   /** The scales from the last draw, by channel (`x`, `y`, `color`, `size`). @type {Record<string, Function>} */
   scales = {};
+
+  constructor() {
+    super();
+    // Properties assigned before this element was defined.
+    upgradeProperties(this);
+  }
 
   connectedCallback() {
     this.#binding.connect();
