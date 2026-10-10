@@ -1,3 +1,4 @@
+import { upgradeProperties } from "../upgrade.mjs";
 import { DataLayer } from "../layer.mjs";
 import { reflect } from "../reflect.mjs";
 
@@ -39,6 +40,12 @@ export default class PlotLine extends DataLayer {
   static observedAttributes = OBSERVED;
 
   #svg = null;
+
+  constructor() {
+    super();
+    // Properties assigned before this element was defined.
+    upgradeProperties(this);
+  }
 
   /** @protected */
   channels() {

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0 — properties set before define (2026-10-09)
+
+- Fix: a property assigned to an element before its class was defined (a
+  lazily imported `data-plot`) was ignored after the upgrade, because the
+  own property shadowed the class's accessor: `plotMarks.mark = fn` rendered
+  default `plot-dot` spans. Every element now moves such values back through
+  its setters when it upgrades. Covers every public property of
+  `<data-plot>`, `<plot-marks>`, `<plot-line>`, `<plot-axis>`,
+  `<plot-legend>`, and `<chernoff-face>` (including `data`, `mark`, and
+  `features`). Fixes #4.
+- This is a minor bump because `^0.0.0` matches only 0.0.0: a consumer
+  declaring `^0.0.0` will not pick this up and must move to `^0.1.0`.
+
 ## 0.0.0 — first version (2026-10-04)
 
 The first version: plots written as HTML.
