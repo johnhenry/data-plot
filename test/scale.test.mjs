@@ -53,3 +53,23 @@ test("extent skips non-numbers", () => {
   assert.deepEqual(extent([3, "x", -1, NaN, 8]), [-1, 8]);
   assert.deepEqual(extent(["x"]), [0, 1]);
 });
+
+test("position: a type override makes numeric codes a band, or non-numbers linear", () => {
+  const codes = position([2020, 2021, 2020, 2022], null, undefined, "band");
+  assert.equal(codes.type, "band");
+  assert.deepEqual(codes.domain, [2020, 2021, 2022]);
+  assert.equal(position([1, 2], null, undefined, "auto").type, "linear");
+  assert.equal(position([1, 2], null, undefined, "bogus").type, "linear");
+  assert.equal(position([1, "x", 5], null, undefined, "linear").type, "linear");
+  assert.deepEqual(position([1, "x", 5], null, undefined, "linear").domain, [1, 5]);
+});
+
+test("color: a type override, and the ramp's ends", () => {
+  const codes = color([1, 2, 1], { type: "categorical" });
+  assert.equal(codes.type, "categorical");
+  assert.deepEqual(codes.domain, [1, 2]);
+  assert.notEqual(codes(1), codes(2));
+  assert.equal(color(["a", "b"], { type: "sequential" }).type, "categorical", "non-numbers can't be a ramp");
+  const themed = color([0, 10], { low: "var(--lo)", high: "red" });
+  assert.match(themed(10), /color-mix\(in oklab, red 100\.0%, var\(--lo\)\)/);
+});

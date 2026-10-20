@@ -327,6 +327,41 @@
             },
             {
               "type": {
+                "text": "string"
+              },
+              "name": "xType",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "yType",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "colorType",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "colorLow",
+              "kind": "field"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "colorHigh",
+              "kind": "field"
+            },
+            {
+              "type": {
                 "text": "number"
               },
               "name": "xPadding",
@@ -388,6 +423,41 @@
               },
               "description": "The y scale's ends, like `0 auto`.",
               "name": "y-domain"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`band` treats numbers as categories (codes, years as labels); `linear` plots only the numbers; `auto` (default) is linear for all-number fields, banded otherwise.",
+              "name": "x-type"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The same for y.",
+              "name": "y-type"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`categorical` gives each distinct number its own palette color; `sequential` (numbers only) a ramp; `auto` (default) a ramp for all-number fields.",
+              "name": "color-type"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The sequential ramp's low end: any CSS color, including `var(--name)`. Default `#d7e5f5`.",
+              "name": "color-low"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The ramp's high end. Default `#1f4e99`.",
+              "name": "color-high"
             },
             {
               "type": {
@@ -1066,8 +1136,22 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A key to the plot's colors: a swatch per category, or a gradient with\nits ends for numbers. Empty when nothing is colored.",
+          "description": "A key to the plot's colors: a swatch per category, or a gradient with\nits ends for numbers. Empty when nothing is colored.\n\nTheme the gradient with `--plot-ramp-low` and `--plot-ramp-high`, or\nreplace it (several stops, another direction) with `--plot-ramp`; set\nthe data's own ends with `color-low` / `color-high` on `<data-plot>`.",
           "name": "PlotLegend",
+          "cssProperties": [
+            {
+              "description": "The gradient's low end. Default: the color scale's.",
+              "name": "--plot-ramp-low"
+            },
+            {
+              "description": "The gradient's high end. Default: the color scale's.",
+              "name": "--plot-ramp-high"
+            },
+            {
+              "description": "The whole gradient background, like `linear-gradient(to right, red, yellow, green)`.",
+              "name": "--plot-ramp"
+            }
+          ],
           "members": [
             {
               "kind": "method",

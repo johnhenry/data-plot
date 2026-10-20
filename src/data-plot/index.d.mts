@@ -16,6 +16,11 @@ export default class DataPlot extends HTMLElement {
   src: string;
   xDomain: string;
   yDomain: string;
+  xType: string;
+  yType: string;
+  colorType: string;
+  colorLow: string;
+  colorHigh: string;
   xPadding: number;
   yPadding: number;
   columnField: string;

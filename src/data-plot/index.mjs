@@ -11,6 +11,11 @@ const ATTRIBUTES = {
   src: "string",
   "x-domain": "string",
   "y-domain": "string",
+  "x-type": "string",
+  "y-type": "string",
+  "color-type": "string",
+  "color-low": "string",
+  "color-high": "string",
   "x-padding": 0.2,
   "y-padding": 0.2,
   "column-field": "string",
@@ -30,6 +35,11 @@ const OBSERVED = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
  * @attr {string} src - `#id` of a `<table>`, `<datalist>`, or `<script type="application/json">` in the page. Default: one inside the plot.
  * @attr {string} x-domain - The x scale's ends, like `0 100` (`auto` keeps one end automatic). Numbers only.
  * @attr {string} y-domain - The y scale's ends, like `0 auto`.
+ * @attr {string} x-type - `band` treats numbers as categories (codes, years as labels); `linear` plots only the numbers; `auto` (default) is linear for all-number fields, banded otherwise.
+ * @attr {string} y-type - The same for y.
+ * @attr {string} color-type - `categorical` gives each distinct number its own palette color; `sequential` (numbers only) a ramp; `auto` (default) a ramp for all-number fields.
+ * @attr {string} color-low - The sequential ramp's low end: any CSS color, including `var(--name)`. Default `#d7e5f5`.
+ * @attr {string} color-high - The ramp's high end. Default `#1f4e99`.
  * @attr {number} x-padding - On a banded x scale, the share of each band left empty, 0–1. Default 0.2.
  * @attr {number} y-padding - The same for a banded y scale.
  * @attr {string} column-field - With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field.
@@ -38,6 +48,11 @@ const OBSERVED = [...Object.keys(ATTRIBUTES), "aria-label", "aria-labelledby"];
  * @prop {string} src
  * @prop {string} xDomain
  * @prop {string} yDomain
+ * @prop {string} xType
+ * @prop {string} yType
+ * @prop {string} colorType
+ * @prop {string} colorLow
+ * @prop {string} colorHigh
  * @prop {number} xPadding
  * @prop {number} yPadding
  * @prop {string} columnField
@@ -126,14 +141,18 @@ export default class DataPlot extends HTMLElement {
     }
     const values = (axis) => uses[axis].flatMap(([field, from]) => from.map((row) => row[field]));
     const scales = {};
-    if (uses.x.length) scales.x = position(values("x"), this.getAttribute("x-domain"), this.xPadding);
-    if (uses.y.length) scales.y = position(values("y"), this.getAttribute("y-domain"), this.yPadding);
+    if (uses.x.length) scales.x = position(values("x"), this.getAttribute("x-domain"), this.xPadding, this.xType);
+    if (uses.y.length) scales.y = position(values("y"), this.getAttribute("y-domain"), this.yPadding, this.yType);
     // Categories read top to bottom, like the table they came from.
     if (scales.y?.type === "band") {
       const band = scales.y;
       scales.y = Object.assign((value) => 1 - band(value), band);
     }
-    if (uses.color.length) scales.color = color(values("color"));
+    if (uses.color.length) scales.color = color(values("color"), {
+        type: this.colorType,
+        ...(this.colorLow ? { low: this.colorLow } : {}),
+        ...(this.colorHigh ? { high: this.colorHigh } : {}),
+      });
     if (uses.size.length) scales.size = linear(extent(values("size").filter(isNumeric)));
     this.scales = scales;
     // :attr bindings share a channel's scale when one covers the field.

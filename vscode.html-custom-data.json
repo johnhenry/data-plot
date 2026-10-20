@@ -70,6 +70,26 @@
           "description": "The y scale's ends, like `0 auto`."
         },
         {
+          "name": "x-type",
+          "description": "`band` treats numbers as categories (codes, years as labels); `linear` plots only the numbers; `auto` (default) is linear for all-number fields, banded otherwise."
+        },
+        {
+          "name": "y-type",
+          "description": "The same for y."
+        },
+        {
+          "name": "color-type",
+          "description": "`categorical` gives each distinct number its own palette color; `sequential` (numbers only) a ramp; `auto` (default) a ramp for all-number fields."
+        },
+        {
+          "name": "color-low",
+          "description": "The sequential ramp's low end: any CSS color, including `var(--name)`. Default `#d7e5f5`."
+        },
+        {
+          "name": "color-high",
+          "description": "The ramp's high end. Default `#1f4e99`."
+        },
+        {
           "name": "x-padding",
           "description": "On a banded x scale, the share of each band left empty, 0–1. Default 0.2."
         },
