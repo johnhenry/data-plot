@@ -355,3 +355,42 @@ test("a new layer, written as the README shows, draws on the plot's scales", asy
   // 10 of 0…20, so halfway up a 200px plot; hidden like the other layers, since the table describes the data.
   expect(result).toEqual({ y: "0.5", bottom: 100, hidden: true });
 });
+
+test("x-type=\"band\" and y-type=\"band\" turn numeric codes into categories; color-type=\"categorical\" gives each code a color", async ({ page }) => {
+  await mount(page, `<data-plot x-type="band" y-type="band"><table><thead><tr><th>year</th><th>grp</th></tr></thead><tbody>
+    <tr><td>2020</td><td>1</td></tr><tr><td>2021</td><td>2</td></tr><tr><td>2022</td><td>1</td></tr></tbody></table>
+    <plot-marks x="year" y="grp" color="grp"></plot-marks></data-plot>`);
+  const types = await page.evaluate(() => {
+    const p = document.querySelector("data-plot");
+    return [p.scales.x.type, p.scales.y.type, p.scales.color.type, p.xType, p.yType];
+  });
+  expect(types).toEqual(["band", "band", "sequential", "band", "band"]);
+  await page.evaluate(() => (document.querySelector("data-plot").colorType = "categorical"));
+  await page.evaluate(() => new Promise((r) => setTimeout(r, 0)));
+  const colors = await page.$$eval(".plot-dot", (els) => els.map((el) => el.style.getPropertyValue("--color")));
+  expect(colors[0]).toBe(colors[2]);
+  expect(colors[0]).not.toBe(colors[1]);
+  expect((await vars(page, ".plot-dot", ["--x"])).map((v) => Number(v["--x"]).toFixed(3))).toEqual(["0.167", "0.500", "0.833"]);
+});
+
+test("color-low and color-high set the ramp for marks and legend; --plot-ramp-low/-high and --plot-ramp theme the legend", async ({ page }) => {
+  await mount(page, `<data-plot color-low="#000000" color-high="#ff0000">${TABLE}<plot-marks x="a" y="b" color="a"></plot-marks><plot-legend></plot-legend></data-plot>`);
+  const colors = await page.$$eval(".plot-dot", (els) => els.map((el) => el.style.getPropertyValue("--color")));
+  expect(colors[2]).toMatch(/#ff0000 100\.0%, #000000/);
+  const ramp = (extra) =>
+    page.$eval(".plot-ramp", (el, extra) => {
+      el.style.cssText += extra;
+      return getComputedStyle(el).backgroundImage;
+    }, extra);
+  expect(await ramp("")).toMatch(/linear-gradient/);
+  // The page can theme it, which an inline --low/--high used to prevent.
+  const ends = await page.$eval(".plot-ramp", (el) => [el.style.getPropertyValue("--low"), el.style.getPropertyValue("--high")]);
+  expect(ends.join()).toContain("#000000");
+  await page.addStyleTag({ content: "plot-legend { --plot-ramp-low: rgb(1, 2, 3); --plot-ramp-high: rgb(4, 5, 6); }" });
+  expect(await ramp("")).toMatch(/rgb\(1, 2, 3\).*rgb\(4, 5, 6\)/);
+  await page.addStyleTag({ content: "plot-legend { --plot-ramp: linear-gradient(to right, rgb(9, 9, 9), rgb(8, 8, 8), rgb(7, 7, 7)); }" });
+  expect(await ramp("")).toMatch(/rgb\(9, 9, 9\).*rgb\(8, 8, 8\).*rgb\(7, 7, 7\)/);
+  await page.evaluate(() => (document.querySelector("data-plot").colorLow = "blue"));
+  await page.evaluate(() => new Promise((r) => setTimeout(r, 0)));
+  expect(await page.$eval(".plot-dot", (el) => el.style.getPropertyValue("--color"))).toMatch(/, blue\)/);
+});

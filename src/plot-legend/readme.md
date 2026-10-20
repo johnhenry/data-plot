@@ -36,6 +36,14 @@ ends for numbers. Empty when nothing is colored.
 |---|---|
 | `requestRender()` | Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once. |
 
+### CSS custom properties
+
+| Property | Description |
+|---|---|
+| `--plot-ramp-low` | The gradient's low end. Default: the color scale's. |
+| `--plot-ramp-high` | The gradient's high end. Default: the color scale's. |
+| `--plot-ramp` | The whole gradient background, like `linear-gradient(to right, red, yellow, green)`. |
+
 <!-- api:end -->
 
 ## Styling

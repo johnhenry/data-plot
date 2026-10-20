@@ -50,8 +50,12 @@ Each channel a layer uses (`x` and `x2`, `y` and `y2`, `color`,
 rounded out to nice ticks (pin either end with `x-domain`/`y-domain`,
 like `0 auto`), and banded for anything else (`x-padding`/`y-padding`
 set the gaps). Banded y reads top to bottom, like a table. Color is
-categorical for text and a ramp for numbers. The scales from the last
-draw are on `.scales`.
+categorical for text and a ramp for numbers. Numbers that are really
+categories (years as labels, ids) take `x-type="band"` / `y-type="band"`
+and `color-type="categorical"`. `color-low` / `color-high` set the ramp's
+ends (the legend's gradient themes with `--plot-ramp-low`,
+`--plot-ramp-high`, or `--plot-ramp`). The scales from the last draw are
+on `.scales`.
 
 ## Accessibility
 
@@ -71,6 +75,11 @@ it becomes `role="img"`; without one, a console warning.
 | `src` | `src` | `string` | `#id` of a `<table>`, `<datalist>`, or `<script type="application/json">` in the page. Default: one inside the plot. |
 | `x-domain` | `xDomain` | `string` | The x scale's ends, like `0 100` (`auto` keeps one end automatic). Numbers only. |
 | `y-domain` | `yDomain` | `string` | The y scale's ends, like `0 auto`. |
+| `x-type` | `xType` | `string` | `band` treats numbers as categories (codes, years as labels); `linear` plots only the numbers; `auto` (default) is linear for all-number fields, banded otherwise. |
+| `y-type` | `yType` | `string` | The same for y. |
+| `color-type` | `colorType` | `string` | `categorical` gives each distinct number its own palette color; `sequential` (numbers only) a ramp; `auto` (default) a ramp for all-number fields. |
+| `color-low` | `colorLow` | `string` | The sequential ramp's low end: any CSS color, including `var(--name)`. Default `#d7e5f5`. |
+| `color-high` | `colorHigh` | `string` | The ramp's high end. Default `#1f4e99`. |
 | `x-padding` | `xPadding` | `number` | On a banded x scale, the share of each band left empty, 0–1. Default 0.2. |
 | `y-padding` | `yPadding` | `number` | The same for a banded y scale. |
 | `column-field` | `columnField` | `string` | With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field. |
@@ -85,6 +94,11 @@ it becomes `role="img"`; without one, a console warning.
 | `src` | `string` | Mirrors the `src` attribute. |
 | `xDomain` | `string` | Mirrors the `x-domain` attribute. |
 | `yDomain` | `string` | Mirrors the `y-domain` attribute. |
+| `xType` | `string` | Mirrors the `x-type` attribute. |
+| `yType` | `string` | Mirrors the `y-type` attribute. |
+| `colorType` | `string` | Mirrors the `color-type` attribute. |
+| `colorLow` | `string` | Mirrors the `color-low` attribute. |
+| `colorHigh` | `string` | Mirrors the `color-high` attribute. |
 | `xPadding` | `number` | Mirrors the `x-padding` attribute. |
 | `yPadding` | `number` | Mirrors the `y-padding` attribute. |
 | `columnField` | `string` | Mirrors the `column-field` attribute. |

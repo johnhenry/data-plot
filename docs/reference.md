@@ -47,6 +47,11 @@ A plot's frame: data, scales, and the layers drawn in it. [Guide](../src/data-pl
 | `src` | `src` | `string` | `#id` of a `<table>`, `<datalist>`, or `<script type="application/json">` in the page. Default: one inside the plot. |
 | `x-domain` | `xDomain` | `string` | The x scale's ends, like `0 100` (`auto` keeps one end automatic). Numbers only. |
 | `y-domain` | `yDomain` | `string` | The y scale's ends, like `0 auto`. |
+| `x-type` | `xType` | `string` | `band` treats numbers as categories (codes, years as labels); `linear` plots only the numbers; `auto` (default) is linear for all-number fields, banded otherwise. |
+| `y-type` | `yType` | `string` | The same for y. |
+| `color-type` | `colorType` | `string` | `categorical` gives each distinct number its own palette color; `sequential` (numbers only) a ramp; `auto` (default) a ramp for all-number fields. |
+| `color-low` | `colorLow` | `string` | The sequential ramp's low end: any CSS color, including `var(--name)`. Default `#d7e5f5`. |
+| `color-high` | `colorHigh` | `string` | The ramp's high end. Default `#1f4e99`. |
 | `x-padding` | `xPadding` | `number` | On a banded x scale, the share of each band left empty, 0–1. Default 0.2. |
 | `y-padding` | `yPadding` | `number` | The same for a banded y scale. |
 | `column-field` | `columnField` | `string` | With `value-field`, reads a grid table (a row per item, a column per category): its column headers become this field. |
@@ -61,6 +66,11 @@ A plot's frame: data, scales, and the layers drawn in it. [Guide](../src/data-pl
 | `src` | `string` | Mirrors the `src` attribute. |
 | `xDomain` | `string` | Mirrors the `x-domain` attribute. |
 | `yDomain` | `string` | Mirrors the `y-domain` attribute. |
+| `xType` | `string` | Mirrors the `x-type` attribute. |
+| `yType` | `string` | Mirrors the `y-type` attribute. |
+| `colorType` | `string` | Mirrors the `color-type` attribute. |
+| `colorLow` | `string` | Mirrors the `color-low` attribute. |
+| `colorHigh` | `string` | Mirrors the `color-high` attribute. |
 | `xPadding` | `number` | Mirrors the `x-padding` attribute. |
 | `yPadding` | `number` | Mirrors the `y-padding` attribute. |
 | `columnField` | `string` | Mirrors the `column-field` attribute. |
@@ -138,6 +148,14 @@ A key to the plot's colors. [Guide](../src/plot-legend/readme.md) · module `@jo
 | Method | Description |
 |---|---|
 | `requestRender()` | Redraws soon: through its plot, or by itself when it can draw alone. Several requests in one task draw once. |
+
+**CSS custom properties**
+
+| Property | Description |
+|---|---|
+| `--plot-ramp-low` | The gradient's low end. Default: the color scale's. |
+| `--plot-ramp-high` | The gradient's high end. Default: the color scale's. |
+| `--plot-ramp` | The whole gradient background, like `linear-gradient(to right, red, yellow, green)`. |
 
 ## `<plot-line>`
 

@@ -94,12 +94,14 @@ export const PALETTE = ["#4269d0", "#efb118", "#ff725c", "#6cc5b0", "#3ca951", "
 
 /**
  * Categories → palette colors (in order of appearance), or numbers → a ramp between two colors.
+ * `type` overrides the choice: "categorical" for numeric codes, "sequential"
+ * for a ramp (numbers only); the default "auto" picks by the values.
  * @param {unknown[]} values
- * @param {{ palette?: string[], low?: string, high?: string }} [options]
+ * @param {{ palette?: string[], low?: string, high?: string, type?: string | null }} [options]
  * @returns {Scale<string>}
  */
-export function color(values, { palette = PALETTE, low = "#d7e5f5", high = "#1f4e99" } = {}) {
-  if (values.length && values.every(isNumber)) {
+export function color(values, { palette = PALETTE, low = "#d7e5f5", high = "#1f4e99", type } = {}) {
+  if (type !== "categorical" && values.length && values.every(isNumber)) {
     const position = linear(extent(values));
     const scale = (value) => `color-mix(in oklab, ${high} ${(position(value) * 100).toFixed(1)}%, ${low})`;
     return Object.assign(scale, { type: "sequential", domain: position.domain, ticks: (count) => ticks(position.domain, count) });
@@ -130,15 +132,19 @@ export function extent(values) {
  * A position scale for `values`: linear when they're all numbers, banded
  * otherwise. `spec` is the `x-domain`/`y-domain` attribute: "0 100", or
  * "0 auto" to pin one end, applied before rounding to nice ticks. `padding`
- * is a banded scale's empty share of each band.
+ * is a banded scale's empty share of each band. `type` overrides the
+ * choice: "band" for numeric codes that are categories, "linear" to plot only
+ * the numbers; anything else (the default, "auto") picks as above.
  * @param {unknown[]} values
  * @param {string | null} [spec]
  * @param {number} [padding]
+ * @param {string | null} [type]
  * @returns {Scale}
  */
-export function position(values, spec, padding) {
-  const present = values.filter((value) => value !== null && value !== undefined && value !== "");
-  if (!present.length || !present.every(isNumber)) return band(present, Number.isFinite(padding) ? Math.min(1, Math.max(0, padding)) : undefined);
+export function position(values, spec, padding, type) {
+  let present = values.filter((value) => value !== null && value !== undefined && value !== "");
+  if (type === "linear") present = present.filter(isNumber);
+  if (type === "band" || !present.length || !present.every(isNumber)) return band(present, Number.isFinite(padding) ? Math.min(1, Math.max(0, padding)) : undefined);
   let [min, max] = extent(present);
   const [low, high] = (spec ?? "").trim().split(/\s+/);
   const pinned = (text, fallback) => (text && text !== "auto" && Number.isFinite(Number(text)) ? Number(text) : fallback);

@@ -50,14 +50,17 @@ export declare function band(values: Iterable<unknown>, padding?: number): Scale
 export declare const PALETTE: string[];
 /**
  * Categories → palette colors (in order of appearance), or numbers → a ramp between two colors.
+ * `type` overrides the choice: "categorical" for numeric codes, "sequential"
+ * for a ramp (numbers only); the default "auto" picks by the values.
  * @param {unknown[]} values
- * @param {{ palette?: string[], low?: string, high?: string }} [options]
+ * @param {{ palette?: string[], low?: string, high?: string, type?: string | null }} [options]
  * @returns {Scale<string>}
  */
-export declare function color(values: unknown[], { palette, low, high }?: {
+export declare function color(values: unknown[], { palette, low, high, type }?: {
     palette?: string[];
     low?: string;
     high?: string;
+    type?: string | null;
 }): Scale<string>;
 /**
  * [smallest, largest] of the finite numbers in `values`, or [0, 1] if there are none.
@@ -69,13 +72,16 @@ export declare function extent(values: Iterable<unknown>): [number, number];
  * A position scale for `values`: linear when they're all numbers, banded
  * otherwise. `spec` is the `x-domain`/`y-domain` attribute: "0 100", or
  * "0 auto" to pin one end, applied before rounding to nice ticks. `padding`
- * is a banded scale's empty share of each band.
+ * is a banded scale's empty share of each band. `type` overrides the
+ * choice: "band" for numeric codes that are categories, "linear" to plot only
+ * the numbers; anything else (the default, "auto") picks as above.
  * @param {unknown[]} values
  * @param {string | null} [spec]
  * @param {number} [padding]
+ * @param {string | null} [type]
  * @returns {Scale}
  */
-export declare function position(values: unknown[], spec?: string | null, padding?: number): Scale;
+export declare function position(values: unknown[], spec?: string | null, padding?: number, type?: string | null): Scale;
 /**
  * Scales any numeric field to 0–1, for `:attr` bindings. A field a channel
  * already scales (in `fixed`, field → scale) uses that scale, so `:size`

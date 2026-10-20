@@ -111,4 +111,4 @@
 :where(plot-legend .plot-legend-label) { font-weight: 600; }
 :where(plot-legend .plot-legend-item) { display: inline-flex; gap: 4px; align-items: center; }
 :where(plot-legend .plot-swatch) { inline-size: 10px; block-size: 10px; border-radius: 2px; background: var(--color); }
-:where(plot-legend .plot-ramp) { inline-size: 80px; block-size: 10px; border-radius: 2px; background: linear-gradient(to right, var(--low), var(--high)); }
+:where(plot-legend .plot-ramp) { inline-size: 80px; block-size: 10px; border-radius: 2px; background: var(--plot-ramp, linear-gradient(to right, var(--plot-ramp-low, var(--low)), var(--plot-ramp-high, var(--high)))); }

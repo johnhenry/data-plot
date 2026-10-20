@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 — band and categorical overrides, themeable ramp (2026-10-20)
+
+- `x-type` / `y-type` on `<data-plot>`: `band` makes numeric codes (years as
+  labels, ids, groups) a banded scale instead of a linear one, so no
+  invisible-character workaround is needed; `linear` plots only the numbers.
+  `position()` takes the same as a fourth argument. Fixes #6.
+- `color-type`: `categorical` gives each distinct number its own palette
+  color (`color()` takes `{ type }`). Fixes #6.
+- `color-low` / `color-high` set the sequential ramp's ends (any CSS color,
+  `var(...)` included); the legend's gradient is themeable with
+  `--plot-ramp-low`, `--plot-ramp-high`, or a whole `--plot-ramp`. Fixes #7.
+
 ## 0.1.0 — properties set before define (2026-10-09)
 
 - Fix: a property assigned to an element before its class was defined (a
